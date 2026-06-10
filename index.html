@@ -943,6 +943,7 @@ function goTo(screen) {
   if (screen === 'patterns') renderPatterns();
   if (screen === 'stitches') renderStitchGrid();
   if (screen === 'tools') renderHookTable();
+  if (screen === 'sync') renderSyncScreen();
   document.getElementById('screens').scrollTop = 0;
 }
 
@@ -1792,13 +1793,6 @@ function showSyncResult(msg, type) {
   const el = document.getElementById('sync-result');
   if (!el) return;
   el.innerHTML = `<div class="card-sm" style="background:var(--${type}-light);border-color:var(--${type});white-space:pre-wrap;font-size:13px;color:var(--${type}-dark)">${msg}</div>`;
-}
-
-// ── patch goTo to handle sync ──
-const _origGoTo = goTo;
-function goTo(screen) {
-  _origGoTo(screen);
-  if (screen === 'sync') renderSyncScreen();
 }
 
 // ═══════════════════════════════════════════════════
