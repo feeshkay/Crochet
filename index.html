@@ -1,0 +1,1317 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="Crochet Studio">
+<title>Crochet Studio</title>
+<style>
+  :root {
+    --cream: #FAF7F2;
+    --cream-dark: #F0EBE1;
+    --rose: #D4859A;
+    --rose-light: #F5DDE5;
+    --rose-dark: #A5607A;
+    --sage: #7A9E87;
+    --sage-light: #D6E8DC;
+    --sage-dark: #4F7360;
+    --charcoal: #3A3535;
+    --charcoal-soft: #5A5555;
+    --muted: #8A8480;
+    --border: rgba(58,53,53,0.12);
+    --border-med: rgba(58,53,53,0.2);
+    --card-bg: #FFFFFF;
+    --bg: #FAF7F2;
+    --shadow: 0 1px 3px rgba(58,53,53,0.08), 0 4px 12px rgba(58,53,53,0.04);
+    --radius: 14px;
+    --radius-sm: 8px;
+    --font: -apple-system, BlinkMacSystemFont, 'SF Pro Text', sans-serif;
+    --safe-bottom: env(safe-area-inset-bottom, 0px);
+    --safe-top: env(safe-area-inset-top, 0px);
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --cream: #1C1917;
+      --cream-dark: #252220;
+      --rose-light: #3D2028;
+      --sage-light: #1A2E22;
+      --charcoal: #F5F1ED;
+      --charcoal-soft: #C8C4C0;
+      --muted: #8A8480;
+      --border: rgba(255,255,255,0.1);
+      --border-med: rgba(255,255,255,0.18);
+      --card-bg: #252220;
+      --bg: #1C1917;
+    }
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+  body { font-family: var(--font); background: var(--bg); color: var(--charcoal); min-height: 100vh; overflow-x: hidden; }
+  /* ── NAV ── */
+  .app-wrap { display: flex; flex-direction: column; min-height: 100vh; min-height: -webkit-fill-available; }
+  .top-bar { position: sticky; top: 0; z-index: 50; background: var(--bg); border-bottom: 0.5px solid var(--border); padding: calc(var(--safe-top) + 12px) 20px 12px; display: flex; align-items: center; justify-content: space-between; }
+  .top-bar-title { font-size: 18px; font-weight: 600; color: var(--rose-dark); letter-spacing: -0.3px; }
+  .top-bar-sub { font-size: 13px; color: var(--muted); }
+  .screens { flex: 1; overflow-y: auto; -webkit-overflow-scrolling: touch; padding: 0 0 calc(80px + var(--safe-bottom)); }
+  .bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; z-index: 50; background: var(--bg); border-top: 0.5px solid var(--border); display: flex; padding: 8px 4px calc(8px + var(--safe-bottom)); }
+  .nav-btn { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 3px; padding: 6px 4px; border: none; background: none; cursor: pointer; color: var(--muted); font-family: var(--font); transition: color .15s; }
+  .nav-btn.active { color: var(--rose); }
+  .nav-btn svg { width: 22px; height: 22px; stroke-width: 1.8; }
+  .nav-btn span { font-size: 10px; font-weight: 500; }
+  /* ── SCREEN ── */
+  .screen { display: none; padding: 16px; }
+  .screen.active { display: block; }
+  /* ── CARDS ── */
+  .card { background: var(--card-bg); border-radius: var(--radius); border: 0.5px solid var(--border); padding: 16px; box-shadow: var(--shadow); margin-bottom: 12px; }
+  .card-sm { background: var(--card-bg); border-radius: var(--radius-sm); border: 0.5px solid var(--border); padding: 12px 14px; margin-bottom: 8px; }
+  .section-label { font-size: 11px; font-weight: 600; letter-spacing: 0.6px; text-transform: uppercase; color: var(--muted); margin: 20px 0 8px; }
+  /* ── TYPOGRAPHY ── */
+  h2 { font-size: 22px; font-weight: 700; color: var(--charcoal); letter-spacing: -0.5px; margin-bottom: 4px; }
+  h3 { font-size: 16px; font-weight: 600; color: var(--charcoal); }
+  .subtext { font-size: 13px; color: var(--muted); line-height: 1.5; }
+  /* ── BUTTONS ── */
+  .btn { display: inline-flex; align-items: center; gap: 6px; padding: 10px 18px; border-radius: 50px; border: 1.5px solid var(--rose); color: var(--rose-dark); background: none; font-family: var(--font); font-size: 14px; font-weight: 600; cursor: pointer; transition: all .15s; }
+  .btn:active { transform: scale(0.97); }
+  .btn-fill { background: var(--rose); color: #fff; border-color: var(--rose); }
+  .btn-fill:active { background: var(--rose-dark); }
+  .btn-sage { border-color: var(--sage); color: var(--sage-dark); }
+  .btn-sage.btn-fill { background: var(--sage); color: #fff; border-color: var(--sage); }
+  .btn-sm { padding: 7px 14px; font-size: 13px; }
+  .btn-full { width: 100%; justify-content: center; }
+  .btn-icon { width: 36px; height: 36px; padding: 0; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; }
+  /* ── INPUTS ── */
+  input, select, textarea { width: 100%; padding: 11px 14px; border-radius: var(--radius-sm); border: 1px solid var(--border-med); background: var(--card-bg); color: var(--charcoal); font-family: var(--font); font-size: 15px; outline: none; transition: border-color .15s; }
+  input:focus, select:focus, textarea:focus { border-color: var(--rose); }
+  textarea { resize: vertical; min-height: 80px; line-height: 1.5; }
+  label { display: block; font-size: 13px; font-weight: 500; color: var(--charcoal-soft); margin-bottom: 5px; }
+  .form-group { margin-bottom: 14px; }
+  /* ── BADGE ── */
+  .badge { display: inline-block; padding: 3px 10px; border-radius: 50px; font-size: 11px; font-weight: 600; }
+  .badge-rose { background: var(--rose-light); color: var(--rose-dark); }
+  .badge-sage { background: var(--sage-light); color: var(--sage-dark); }
+  .badge-muted { background: var(--cream-dark); color: var(--muted); }
+  /* ── COUNTER ── */
+  .counter-ring { position: relative; width: 160px; height: 160px; margin: 0 auto 20px; }
+  .counter-ring svg { transform: rotate(-90deg); }
+  .counter-center { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+  .counter-num { font-size: 44px; font-weight: 700; color: var(--charcoal); line-height: 1; }
+  .counter-label { font-size: 13px; color: var(--muted); margin-top: 2px; }
+  .counter-row { display: flex; justify-content: center; gap: 16px; margin-top: 8px; }
+  .counter-big-btn { width: 68px; height: 68px; border-radius: 50%; border: none; display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 28px; font-weight: 300; color: #fff; transition: transform .1s; }
+  .counter-big-btn:active { transform: scale(0.93); }
+  .btn-minus { background: var(--rose); }
+  .btn-plus { background: var(--sage); }
+  /* ── STITCH CARDS ── */
+  .stitch-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .stitch-card { background: var(--card-bg); border-radius: var(--radius); border: 0.5px solid var(--border); padding: 14px 12px; cursor: pointer; transition: transform .1s, box-shadow .1s; }
+  .stitch-card:active { transform: scale(0.97); }
+  .stitch-icon { font-size: 28px; margin-bottom: 6px; display: block; }
+  .stitch-name { font-size: 14px; font-weight: 600; color: var(--charcoal); }
+  .stitch-abbr { font-size: 12px; color: var(--rose); font-weight: 700; }
+  /* ── MODAL ── */
+  .modal-backdrop { position: fixed; inset: 0; background: rgba(0,0,0,0.45); z-index: 100; display: flex; align-items: flex-end; opacity: 0; pointer-events: none; transition: opacity .2s; }
+  .modal-backdrop.open { opacity: 1; pointer-events: all; }
+  .modal-sheet { background: var(--card-bg); border-radius: 20px 20px 0 0; padding: 20px 20px calc(20px + var(--safe-bottom)); width: 100%; max-height: 90vh; overflow-y: auto; transform: translateY(30px); transition: transform .25s; }
+  .modal-backdrop.open .modal-sheet { transform: translateY(0); }
+  .modal-handle { width: 40px; height: 4px; background: var(--border-med); border-radius: 2px; margin: 0 auto 16px; }
+  .modal-title { font-size: 18px; font-weight: 700; color: var(--charcoal); margin-bottom: 4px; }
+  /* ── PROGRESS ── */
+  .progress-bar { height: 6px; background: var(--cream-dark); border-radius: 3px; overflow: hidden; margin: 8px 0; }
+  .progress-fill { height: 100%; background: var(--rose); border-radius: 3px; transition: width .3s; }
+  /* ── YARN COLOR SWATCH ── */
+  .swatch { width: 32px; height: 32px; border-radius: 50%; border: 2px solid var(--border); display: inline-block; flex-shrink: 0; }
+  /* ── TABS ── */
+  .tab-bar { display: flex; background: var(--cream-dark); border-radius: 10px; padding: 3px; margin-bottom: 16px; }
+  .tab-btn { flex: 1; padding: 7px; border: none; background: none; border-radius: 8px; font-family: var(--font); font-size: 13px; font-weight: 500; color: var(--muted); cursor: pointer; transition: all .15s; }
+  .tab-btn.active { background: var(--card-bg); color: var(--charcoal); box-shadow: 0 1px 4px rgba(58,53,53,0.1); }
+  /* ── STEP LIST ── */
+  .step-item { display: flex; gap: 12px; padding: 12px 0; border-bottom: 0.5px solid var(--border); }
+  .step-num { width: 26px; height: 26px; border-radius: 50%; background: var(--rose-light); color: var(--rose-dark); font-size: 13px; font-weight: 700; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+  .step-text { font-size: 14px; line-height: 1.6; color: var(--charcoal-soft); }
+  .step-tip { font-size: 12px; color: var(--sage-dark); margin-top: 4px; font-style: italic; }
+  /* ── HOOK TABLE ── */
+  table { width: 100%; border-collapse: collapse; font-size: 14px; }
+  th { font-size: 11px; font-weight: 600; color: var(--muted); text-align: left; padding: 6px 10px; border-bottom: 1px solid var(--border); letter-spacing: 0.4px; text-transform: uppercase; }
+  td { padding: 10px; border-bottom: 0.5px solid var(--border); color: var(--charcoal); }
+  tr:last-child td { border-bottom: none; }
+  /* ── TIMER ── */
+  .timer-display { font-size: 52px; font-weight: 200; color: var(--charcoal); text-align: center; letter-spacing: 2px; font-variant-numeric: tabular-nums; }
+  /* ── EMPTY STATE ── */
+  .empty-state { text-align: center; padding: 48px 24px; }
+  .empty-icon { font-size: 48px; margin-bottom: 12px; opacity: 0.5; }
+  .empty-msg { font-size: 15px; color: var(--muted); }
+  /* ── TAG PILLS ── */
+  .tags-row { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; }
+  .tag { background: var(--cream-dark); color: var(--charcoal-soft); font-size: 12px; padding: 4px 10px; border-radius: 50px; border: 0.5px solid var(--border); }
+  /* ── DIFFICULTY DOTS ── */
+  .diff-dots { display: flex; gap: 4px; }
+  .diff-dot { width: 10px; height: 10px; border-radius: 50%; background: var(--border-med); }
+  .diff-dot.on { background: var(--rose); }
+  /* ── MISC ── */
+  .row { display: flex; align-items: center; gap: 10px; }
+  .row-between { display: flex; align-items: center; justify-content: space-between; }
+  .divider { height: 0.5px; background: var(--border); margin: 12px 0; }
+  .text-rose { color: var(--rose-dark); }
+  .text-sage { color: var(--sage-dark); }
+  .mt-8 { margin-top: 8px; }
+  .mt-12 { margin-top: 12px; }
+  .mt-16 { margin-top: 16px; }
+  .mb-0 { margin-bottom: 0; }
+  select option { background: var(--card-bg); color: var(--charcoal); }
+</style>
+</head>
+<body>
+<div class="app-wrap">
+
+  <!-- TOP BAR -->
+  <div class="top-bar" id="topBar">
+    <div>
+      <div class="top-bar-title">🧶 Crochet Studio</div>
+    </div>
+    <button class="btn btn-sm btn-fill" id="topAction" onclick="handleTopAction()" style="display:none"></button>
+  </div>
+
+  <!-- SCREENS CONTAINER -->
+  <div class="screens" id="screens">
+
+    <!-- ═══ HOME ═══ -->
+    <div class="screen active" id="screen-home">
+      <div style="padding:4px 0 12px">
+        <h2>Good day 🧶</h2>
+        <p class="subtext">What are we making today?</p>
+      </div>
+      <!-- Quick stats -->
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:16px">
+        <div class="card" style="padding:12px;text-align:center;margin-bottom:0">
+          <div style="font-size:22px;font-weight:700;color:var(--rose)" id="stat-projects">0</div>
+          <div style="font-size:11px;color:var(--muted);margin-top:2px">Projects</div>
+        </div>
+        <div class="card" style="padding:12px;text-align:center;margin-bottom:0">
+          <div style="font-size:22px;font-weight:700;color:var(--sage)" id="stat-yarns">0</div>
+          <div style="font-size:11px;color:var(--muted);margin-top:2px">Yarns</div>
+        </div>
+        <div class="card" style="padding:12px;text-align:center;margin-bottom:0">
+          <div style="font-size:22px;font-weight:700;color:var(--charcoal)" id="stat-patterns">0</div>
+          <div style="font-size:11px;color:var(--muted);margin-top:2px">Patterns</div>
+        </div>
+      </div>
+      <!-- Active projects -->
+      <div class="section-label">Active Projects</div>
+      <div id="home-wip-list">
+        <div class="empty-state" style="padding:32px 0">
+          <div class="empty-icon">🪡</div>
+          <div class="empty-msg">No active projects yet</div>
+          <div style="margin-top:12px"><button class="btn btn-fill btn-sm" onclick="goTo('projects')">Start a project</button></div>
+        </div>
+      </div>
+      <!-- Stitch of the day -->
+      <div class="section-label">Quick Stitch Lookup</div>
+      <div class="card" style="display:flex;align-items:center;gap:14px;cursor:pointer" onclick="goTo('stitches')">
+        <div style="font-size:36px">✂️</div>
+        <div>
+          <div style="font-size:15px;font-weight:600">Stitch Library</div>
+          <div class="subtext">24 stitches with step-by-step guides</div>
+        </div>
+        <div style="margin-left:auto;color:var(--muted)">›</div>
+      </div>
+      <!-- Abbreviation quick ref -->
+      <div class="section-label">Common Abbreviations</div>
+      <div class="card" id="home-abbr-grid" style="display:grid;grid-template-columns:1fr 1fr;gap:6px;padding:12px"></div>
+    </div>
+
+    <!-- ═══ PROJECTS ═══ -->
+    <div class="screen" id="screen-projects">
+      <div class="tab-bar" id="proj-tabs">
+        <button class="tab-btn active" onclick="filterProjects('WIP')">In Progress</button>
+        <button class="tab-btn" onclick="filterProjects('finished')">Finished</button>
+        <button class="tab-btn" onclick="filterProjects('frogged')">Frogged</button>
+      </div>
+      <div id="project-list"></div>
+    </div>
+
+    <!-- ═══ PROJECT DETAIL (sub-screen) ═══ -->
+    <div class="screen" id="screen-project-detail">
+      <div id="project-detail-content"></div>
+    </div>
+
+    <!-- ═══ COUNTER ═══ -->
+    <div class="screen" id="screen-counter">
+      <div class="tab-bar">
+        <button class="tab-btn active" id="cnt-tab-row" onclick="setCounterMode('row')">Row Counter</button>
+        <button class="tab-btn" id="cnt-tab-stitch" onclick="setCounterMode('stitch')">Stitch Counter</button>
+      </div>
+      <div class="card" style="text-align:center;padding:24px 16px">
+        <div class="counter-ring">
+          <svg width="160" height="160" viewBox="0 0 160 160">
+            <circle cx="80" cy="80" r="70" fill="none" stroke="var(--cream-dark)" stroke-width="8"/>
+            <circle id="ring-progress" cx="80" cy="80" r="70" fill="none" stroke="var(--rose)" stroke-width="8" stroke-linecap="round" stroke-dasharray="440" stroke-dashoffset="440"/>
+          </svg>
+          <div class="counter-center">
+            <div class="counter-num" id="counter-display">0</div>
+            <div class="counter-label" id="counter-mode-label">Row</div>
+          </div>
+        </div>
+        <div class="counter-row">
+          <button class="counter-big-btn btn-minus" onclick="adjustCounter(-1)">−</button>
+          <button class="counter-big-btn btn-plus" onclick="adjustCounter(1)">+</button>
+        </div>
+        <div style="margin-top:16px;display:flex;gap:8px;justify-content:center;flex-wrap:wrap">
+          <button class="btn btn-sm" onclick="setCounterTarget()">Set Goal</button>
+          <button class="btn btn-sm" onclick="resetCounter()">Reset</button>
+        </div>
+        <div id="counter-goal-display" style="margin-top:10px;font-size:13px;color:var(--muted)"></div>
+      </div>
+      <!-- Second counter -->
+      <div class="section-label">Secondary Counter</div>
+      <div class="card" style="display:flex;align-items:center;justify-content:space-between;padding:14px 16px">
+        <div>
+          <div style="font-size:13px;color:var(--muted)">Repeat counter</div>
+          <div style="font-size:28px;font-weight:700;color:var(--sage)" id="counter2-display">0</div>
+        </div>
+        <div style="display:flex;gap:10px">
+          <button class="counter-big-btn btn-minus" style="width:50px;height:50px;font-size:22px" onclick="adjustCounter2(-1)">−</button>
+          <button class="counter-big-btn btn-plus" style="width:50px;height:50px;font-size:22px" onclick="adjustCounter2(1)">+</button>
+        </div>
+      </div>
+      <!-- Timer -->
+      <div class="section-label">Session Timer</div>
+      <div class="card" style="text-align:center;padding:20px">
+        <div class="timer-display" id="timer-display">00:00:00</div>
+        <div style="display:flex;gap:10px;justify-content:center;margin-top:16px">
+          <button class="btn btn-fill btn-sm" id="timer-btn" onclick="toggleTimer()">Start</button>
+          <button class="btn btn-sm" onclick="resetTimer()">Reset</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══ STITCHES ═══ -->
+    <div class="screen" id="screen-stitches">
+      <div style="position:sticky;top:0;background:var(--bg);padding-bottom:10px;z-index:10">
+        <input type="search" id="stitch-search" placeholder="Search stitches…" oninput="filterStitches(this.value)" style="margin-bottom:0">
+      </div>
+      <div class="tab-bar" id="stitch-cats" style="margin-top:10px">
+        <button class="tab-btn active" onclick="filterStitchCat('all',this)">All</button>
+        <button class="tab-btn" onclick="filterStitchCat('basic',this)">Basic</button>
+        <button class="tab-btn" onclick="filterStitchCat('textured',this)">Textured</button>
+        <button class="tab-btn" onclick="filterStitchCat('special',this)">Special</button>
+      </div>
+      <div class="stitch-grid" id="stitch-grid"></div>
+    </div>
+
+    <!-- ═══ STITCH DETAIL (sub-screen) ═══ -->
+    <div class="screen" id="screen-stitch-detail">
+      <div id="stitch-detail-content"></div>
+    </div>
+
+    <!-- ═══ YARN STASH ═══ -->
+    <div class="screen" id="screen-yarn">
+      <div id="yarn-list"></div>
+    </div>
+
+    <!-- ═══ PATTERNS ═══ -->
+    <div class="screen" id="screen-patterns">
+      <div id="pattern-list"></div>
+    </div>
+
+    <!-- ═══ TOOLS ═══ -->
+    <div class="screen" id="screen-tools">
+      <div class="tab-bar" id="tools-tabs">
+        <button class="tab-btn active" onclick="showToolTab('hooks',this)">Hook Sizes</button>
+        <button class="tab-btn" onclick="showToolTab('gauge',this)">Gauge Calc</button>
+        <button class="tab-btn" onclick="showToolTab('glossary',this)">Glossary</button>
+      </div>
+      <div id="tool-hooks" class="tool-panel">
+        <div class="card">
+          <h3 style="margin-bottom:12px">Hook Size Reference</h3>
+          <div style="overflow-x:auto">
+            <table id="hook-table"></table>
+          </div>
+        </div>
+      </div>
+      <div id="tool-gauge" class="tool-panel" style="display:none">
+        <div class="card">
+          <h3 style="margin-bottom:14px">Gauge Calculator</h3>
+          <div class="form-group">
+            <label>Stitches in your swatch</label>
+            <input type="number" id="g-swatch-sts" placeholder="e.g. 20" min="1">
+          </div>
+          <div class="form-group">
+            <label>Rows in your swatch</label>
+            <input type="number" id="g-swatch-rows" placeholder="e.g. 24" min="1">
+          </div>
+          <div class="form-group">
+            <label>Swatch width (cm)</label>
+            <input type="number" id="g-swatch-w" placeholder="e.g. 10" min="1">
+          </div>
+          <div class="form-group">
+            <label>Swatch height (cm)</label>
+            <input type="number" id="g-swatch-h" placeholder="e.g. 10" min="1">
+          </div>
+          <div class="divider"></div>
+          <div class="form-group">
+            <label>Target width (cm)</label>
+            <input type="number" id="g-target-w" placeholder="finished piece width">
+          </div>
+          <div class="form-group">
+            <label>Target height (cm)</label>
+            <input type="number" id="g-target-h" placeholder="finished piece height">
+          </div>
+          <button class="btn btn-fill btn-full" onclick="calcGauge()">Calculate</button>
+          <div id="gauge-result" style="margin-top:16px"></div>
+        </div>
+      </div>
+      <div id="tool-glossary" class="tool-panel" style="display:none">
+        <input type="search" id="gloss-search" placeholder="Search abbreviation…" oninput="filterGlossary(this.value)" style="margin-bottom:12px">
+        <div id="glossary-list"></div>
+      </div>
+    </div>
+
+  </div><!-- /screens -->
+
+  <!-- BOTTOM NAV -->
+  <nav class="bottom-nav">
+    <button class="nav-btn active" id="nav-home" onclick="goTo('home')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M3 9.5L12 3l9 6.5V20a1 1 0 01-1 1H4a1 1 0 01-1-1V9.5z"/><path d="M9 21V12h6v9"/></svg>
+      <span>Home</span>
+    </button>
+    <button class="nav-btn" id="nav-projects" onclick="goTo('projects')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg>
+      <span>Projects</span>
+    </button>
+    <button class="nav-btn" id="nav-counter" onclick="goTo('counter')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg>
+      <span>Counter</span>
+    </button>
+    <button class="nav-btn" id="nav-stitches" onclick="goTo('stitches')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M12 3C7.58 3 4 6.58 4 11c0 2.42 1.08 4.58 2.78 6.08L4 21l4.54-1.2A8.93 8.93 0 0012 21c4.42 0 8-3.58 8-8s-3.58-8-8-8z"/><path d="M8 11h8M8 14h5"/></svg>
+      <span>Stitches</span>
+    </button>
+    <button class="nav-btn" id="nav-yarn" onclick="goTo('yarn')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="8"/><path d="M4.93 7.07a8 8 0 0114.14 0M4.93 16.93a8 8 0 0114.14 0M3 12h18"/></svg>
+      <span>Stash</span>
+    </button>
+    <button class="nav-btn" id="nav-tools" onclick="goTo('tools')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M14.7 6.3a1 1 0 000 1.4l1.6 1.6a1 1 0 001.4 0l3.77-3.77a6 6 0 01-7.94 7.94l-6.91 6.91a2.12 2.12 0 01-3-3l6.91-6.91a6 6 0 017.94-7.94l-3.76 3.76z"/></svg>
+      <span>Tools</span>
+    </button>
+  </nav>
+
+</div><!-- /app-wrap -->
+
+<!-- ═══ MODALS ═══ -->
+<!-- Add Project -->
+<div class="modal-backdrop" id="modal-add-project">
+  <div class="modal-sheet">
+    <div class="modal-handle"></div>
+    <div class="modal-title">New Project</div>
+    <div style="margin-top:16px">
+      <div class="form-group"><label>Project name</label><input type="text" id="proj-name" placeholder="My cosy blanket…"></div>
+      <div class="form-group"><label>Type</label>
+        <select id="proj-type"><option>Blanket</option><option>Sweater</option><option>Hat</option><option>Scarf</option><option>Amigurumi</option><option>Bag</option><option>Socks</option><option>Shawl</option><option>Mittens</option><option>Other</option></select>
+      </div>
+      <div class="form-group"><label>Hook size</label>
+        <select id="proj-hook"><option>2.0mm</option><option>2.5mm</option><option>3.0mm</option><option>3.5mm</option><option>4.0mm</option><option>4.5mm</option><option>5.0mm</option><option>5.5mm</option><option>6.0mm</option><option>6.5mm</option><option>7.0mm</option><option>8.0mm</option><option>9.0mm</option><option>10.0mm</option><option>12.0mm</option><option>15.0mm</option><option>20.0mm</option></select>
+      </div>
+      <div class="form-group"><label>Yarn weight</label>
+        <select id="proj-yarn-weight"><option>Lace (0)</option><option>Fingering (1)</option><option>Sport (2)</option><option>DK (3)</option><option>Worsted (4)</option><option>Bulky (5)</option><option>Super Bulky (6)</option><option>Jumbo (7)</option></select>
+      </div>
+      <div class="form-group"><label>Notes</label><textarea id="proj-notes" placeholder="Pattern source, modifications…"></textarea></div>
+      <div class="form-group"><label>Target rows</label><input type="number" id="proj-target-rows" placeholder="optional"></div>
+      <button class="btn btn-fill btn-full" onclick="saveProject()">Add Project</button>
+    </div>
+  </div>
+</div>
+
+<!-- Add Yarn -->
+<div class="modal-backdrop" id="modal-add-yarn">
+  <div class="modal-sheet">
+    <div class="modal-handle"></div>
+    <div class="modal-title">Add to Stash</div>
+    <div style="margin-top:16px">
+      <div class="form-group"><label>Brand & color name</label><input type="text" id="yarn-name" placeholder="e.g. Lion Brand Wool-Ease Cream"></div>
+      <div class="form-group"><label>Weight</label>
+        <select id="yarn-weight"><option>Lace (0)</option><option>Fingering (1)</option><option>Sport (2)</option><option>DK (3)</option><option>Worsted (4)</option><option>Bulky (5)</option><option>Super Bulky (6)</option><option>Jumbo (7)</option></select>
+      </div>
+      <div class="form-group"><label>Fiber content</label><input type="text" id="yarn-fiber" placeholder="e.g. 80% wool, 20% acrylic"></div>
+      <div class="form-group"><label>Meterage per skein</label><input type="number" id="yarn-meterage" placeholder="e.g. 200"></div>
+      <div class="form-group"><label>Number of skeins</label><input type="number" id="yarn-skeins" placeholder="1" min="1" value="1"></div>
+      <div class="form-group"><label>Color (hex)</label><input type="color" id="yarn-color" value="#D4859A" style="height:44px;padding:4px;cursor:pointer"></div>
+      <div class="form-group"><label>Notes</label><textarea id="yarn-notes" placeholder="Where you bought it, dye lot…"></textarea></div>
+      <button class="btn btn-fill btn-full" onclick="saveYarn()">Add Yarn</button>
+    </div>
+  </div>
+</div>
+
+<!-- Add Pattern -->
+<div class="modal-backdrop" id="modal-add-pattern">
+  <div class="modal-sheet">
+    <div class="modal-handle"></div>
+    <div class="modal-title">Save Pattern</div>
+    <div style="margin-top:16px">
+      <div class="form-group"><label>Pattern name</label><input type="text" id="pat-name" placeholder="e.g. Granny Square Blanket"></div>
+      <div class="form-group"><label>Source / Designer</label><input type="text" id="pat-source" placeholder="Ravelry, blog, book…"></div>
+      <div class="form-group"><label>Difficulty</label>
+        <select id="pat-diff"><option value="1">Beginner</option><option value="2">Easy</option><option value="3">Intermediate</option><option value="4">Advanced</option><option value="5">Expert</option></select>
+      </div>
+      <div class="form-group"><label>Tags (comma-separated)</label><input type="text" id="pat-tags" placeholder="cosy, winter, gift"></div>
+      <div class="form-group"><label>Notes / Instructions</label><textarea id="pat-notes" placeholder="Paste key notes, modifications…" style="min-height:120px"></textarea></div>
+      <div class="form-group"><label>URL (optional)</label><input type="url" id="pat-url" placeholder="https://…"></div>
+      <button class="btn btn-fill btn-full" onclick="savePattern()">Save Pattern</button>
+    </div>
+  </div>
+</div>
+
+<!-- Stitch detail modal -->
+<div class="modal-backdrop" id="modal-stitch">
+  <div class="modal-sheet" id="modal-stitch-content" style="max-height:90vh">
+    <div class="modal-handle"></div>
+    <div id="stitch-modal-inner"></div>
+  </div>
+</div>
+
+<!-- Set goal modal -->
+<div class="modal-backdrop" id="modal-goal">
+  <div class="modal-sheet">
+    <div class="modal-handle"></div>
+    <div class="modal-title">Set Counter Goal</div>
+    <div style="margin-top:16px">
+      <div class="form-group"><label>Goal (rows/stitches)</label><input type="number" id="goal-input" placeholder="e.g. 50" min="1"></div>
+      <button class="btn btn-fill btn-full" onclick="confirmGoal()">Set Goal</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ═══════════════════════════════════════════════════
+// DATA LAYER
+// ═══════════════════════════════════════════════════
+const LS = {
+  get: k => { try { return JSON.parse(localStorage.getItem(k)) || [] } catch(e){ return [] } },
+  set: (k,v) => localStorage.setItem(k, JSON.stringify(v)),
+  getObj: k => { try { return JSON.parse(localStorage.getItem(k)) || {} } catch(e){ return {} } },
+  setObj: (k,v) => localStorage.setItem(k, JSON.stringify(v))
+};
+
+// ═══════════════════════════════════════════════════
+// STITCH DATA
+// ═══════════════════════════════════════════════════
+const STITCHES = [
+  { id:'sl-st', name:'Slip Stitch', abbr:'sl st', cat:'basic', icon:'🔗', diff:1,
+    desc:'The shortest crochet stitch, used mainly for joining or moving yarn along a piece without adding height.',
+    uses:['Joining rounds in the round','Closing seams','Decorative surface work'],
+    steps:[
+      {t:'Insert hook', d:'Push your hook through the stitch from front to back, or under both loops of the top V.',tip:'For joining rounds, insert into the first stitch of that round.'},
+      {t:'Yarn over', d:'Bring the yarn from behind the hook, over the top from back to front.',tip:'Keep even tension — too tight and the stitch will pucker.'},
+      {t:'Pull through all loops', d:'Draw the yarn through the stitch AND through the single loop already on your hook in one smooth motion.',tip:'You end with one loop on hook — that\'s it, stitch complete!'},
+    ]
+  },
+  { id:'ch', name:'Chain Stitch', abbr:'ch', cat:'basic', icon:'⛓️', diff:1,
+    desc:'The foundation of almost every crochet project. Chains form the starting row and are used throughout patterns.',
+    uses:['Foundation chains','Turning chains','Creating mesh and lace'],
+    steps:[
+      {t:'Make a slip knot', d:'Make a loop, pull yarn end through to create an adjustable knot on your hook.',tip:'Leave a 6-inch tail — long enough to weave in later.'},
+      {t:'Yarn over', d:'Bring working yarn over the hook from back to front.',tip:'Your hook should angle slightly downward as you yarn over.'},
+      {t:'Pull through the loop', d:'Draw the yarn through the existing loop on your hook. One chain made.',tip:'Count each V-shaped loop on the top as one chain. Don\'t count the slip knot or loop on hook.'},
+      {t:'Repeat', d:'Continue — yarn over, pull through — for the required number of chains.',tip:'Try to keep tension even. Most beginners crochet chains too tightly; relax your grip.'},
+    ]
+  },
+  { id:'sc', name:'Single Crochet', abbr:'sc', cat:'basic', icon:'🔵', diff:1,
+    desc:'The most fundamental and versatile crochet stitch. Creates a dense, firm fabric perfect for amigurumi, bags, and dishcloths.',
+    uses:['Amigurumi (stuffed toys)','Dishcloths and washcloths','Dense bags','Beginning projects'],
+    steps:[
+      {t:'Insert hook', d:'Push hook through the designated stitch, under both loops of the top V shape (unless pattern says otherwise).',tip:'In the round, insert under both loops to start — into the back loop only for a ribbed effect.'},
+      {t:'Yarn over', d:'Bring the yarn over the hook from back to front. You now have two loops on your hook.',tip:''},
+      {t:'Pull up a loop', d:'Draw the yarn through the stitch. You now have two loops on your hook.',tip:'This is called "pulling up a loop." The second loop should sit loosely on your hook.'},
+      {t:'Yarn over again', d:'Bring the yarn over the hook one more time.',tip:''},
+      {t:'Pull through both loops', d:'Draw the yarn through both loops on the hook. Single crochet complete — one loop remains.',tip:'The whole stitch should be about 1 chain height tall. If it looks shorter, your tension may be too tight.'},
+    ]
+  },
+  { id:'hdc', name:'Half Double Crochet', abbr:'hdc', cat:'basic', icon:'🟡', diff:1,
+    desc:'Taller than single crochet but shorter than double crochet. Creates a slightly stretchy fabric with a distinctive twist on the top.',
+    uses:['Beanies and hats','Baby items','Scarves','Mid-weight fabric projects'],
+    steps:[
+      {t:'Yarn over first', d:'Unlike sc, you yarn over BEFORE inserting the hook. This is what makes it a "yarn over" stitch.',tip:'This pre-yarn-over is the defining characteristic of hdc, dc, and treble stitches.'},
+      {t:'Insert hook', d:'Insert hook into the designated stitch under both top loops.',tip:''},
+      {t:'Yarn over and pull up a loop', d:'Yarn over again and pull through the stitch. You now have three loops on your hook.',tip:'You should see 3 distinct loops stacked on your hook.'},
+      {t:'Yarn over and pull through all three', d:'Yarn over one final time and draw through all three loops at once.',tip:'The signature "third loop" of hdc sits horizontally behind the top V — great for a ribbing effect!'},
+    ]
+  },
+  { id:'dc', name:'Double Crochet', abbr:'dc', cat:'basic', icon:'🟠', diff:1,
+    desc:'The most commonly used stitch in crochet. Creates a tall, flexible fabric with a balanced drape — the backbone of countless patterns.',
+    uses:['Blankets and afghans','Garments and cardigans','Dishcloths','Granny squares'],
+    steps:[
+      {t:'Yarn over', d:'Bring yarn over hook before inserting into stitch.',tip:''},
+      {t:'Insert hook into stitch', d:'Insert hook into the designated stitch under both top loops.',tip:''},
+      {t:'Yarn over, pull up a loop', d:'Yarn over and draw through the stitch. You now have three loops on your hook.',tip:''},
+      {t:'Yarn over, pull through two loops', d:'Yarn over and draw through the first two loops only. Two loops remain.',tip:'Halfway there! This is where double crochet "pauses" — you\'ll finish with the next step.'},
+      {t:'Yarn over, pull through last two loops', d:'Yarn over and draw through the remaining two loops. Double crochet complete.',tip:'One loop on hook. The finished stitch looks like a post with a horizontal bar through it.'},
+    ]
+  },
+  { id:'tr', name:'Treble Crochet', abbr:'tr', cat:'basic', icon:'🔴', diff:2,
+    desc:'A tall, elegant stitch — double the height of a double crochet. Creates an airy, drapey fabric ideal for lacy designs and tall textures.',
+    uses:['Lace patterns','Tall textured stitches','Mesh and filet crochet','Openwork shawls'],
+    steps:[
+      {t:'Yarn over twice', d:'Wrap yarn over hook TWO times before inserting into stitch. You start with 3 loops on hook.',tip:'This double yarn-over is what makes it a treble (triple) stitch.'},
+      {t:'Insert hook, pull up a loop', d:'Insert hook into stitch, yarn over, and pull up a loop. Now you have 4 loops on hook.',tip:''},
+      {t:'First pull-through: 2 loops', d:'Yarn over and pull through the first 2 loops. 3 loops remain.',tip:''},
+      {t:'Second pull-through: 2 loops', d:'Yarn over and pull through the next 2 loops. 2 loops remain.',tip:'Think of it as "yarn over, pull through 2" three times total.'},
+      {t:'Third pull-through: last 2 loops', d:'Yarn over and pull through the final 2 loops. Treble complete.',tip:'The finished stitch is tall and open — about 3 chain heights.'},
+    ]
+  },
+  { id:'dtr', name:'Double Treble', abbr:'dtr', cat:'basic', icon:'⭕', diff:2,
+    desc:'Even taller than treble crochet. Used for extra-tall stitches in lacework and specialty patterns.',
+    uses:['Lacework','Tall stitch patterns','Specialty designs'],
+    steps:[
+      {t:'Yarn over 3 times', d:'Wrap yarn over hook three times before inserting. You start with 4 loops on hook.',tip:''},
+      {t:'Insert and pull up a loop', d:'Insert into stitch, yarn over, pull up a loop. 5 loops on hook.',tip:''},
+      {t:'Pull through 2 loops, 4 times', d:'Yarn over, pull through 2 loops — repeat this four times until one loop remains.',tip:'Each "yarn over, pull through 2" reduces the loop count by one. Keep count!'},
+    ]
+  },
+  { id:'magic-ring', name:'Magic Ring', abbr:'MR', cat:'basic', icon:'⭕', diff:2,
+    desc:'Also called the magic circle or adjustable ring. Used to start projects in the round with a tightly closed center — essential for amigurumi.',
+    uses:['Amigurumi','Hats worked in the round','Granny squares','Mandalas'],
+    steps:[
+      {t:'Form a loop', d:'Drape the yarn over two fingers, tail hanging down and working yarn behind. Pull working yarn through the loop to create a second loop.',tip:'Some people wrap around the finger twice for more control.'},
+      {t:'Chain to lock', d:'Make 1–3 chain stitches through the loop to lock it. The number depends on your first stitch (1 ch for sc, 2 for hdc, 3 for dc).',tip:''},
+      {t:'Work into the ring', d:'Insert hook through the center of the ring (not into chain stitches), work your first round of stitches across the ring.',tip:'Hold the tail and loop end together as you work to prevent them slipping.'},
+      {t:'Pull to close', d:'Once your stitches are in, pull the yarn tail firmly to close the center hole completely.',tip:'Tug gently while working the stitches apart with your hook if they bunch up.'},
+    ]
+  },
+  { id:'bobble', name:'Bobble Stitch', abbr:'bob', cat:'textured', icon:'⚪', diff:3,
+    desc:'A cluster of partially-worked double crochets joined together to form a three-dimensional bump on the fabric surface.',
+    uses:['Textured blankets','Bobble pillows','Decorative accents','Baby items'],
+    steps:[
+      {t:'Work partial dc', d:'Yarn over, insert hook, pull up loop, yarn over, pull through 2 — stop before finishing. (3 loops on hook)',tip:'This is an "incomplete" double crochet, sometimes called a "dc2tog cluster start."'},
+      {t:'Repeat 4 more times', d:'Work 4 more partial double crochets into the SAME stitch. You now have 6 loops on hook.',tip:'The classic bobble uses 5 partial dc. Some patterns use 3 or 4 for a smaller bob.'},
+      {t:'Join all loops', d:'Yarn over and pull through ALL 6 loops at once to complete the bobble.',tip:'The bobble pops to the wrong side of your work. If working flat, the bobble appears on the back — flip it through with your thumb.'},
+      {t:'Chain 1 to lock', d:'Work 1 chain to secure the bobble in place.',tip:''},
+    ]
+  },
+  { id:'popcorn', name:'Popcorn Stitch', abbr:'pc', cat:'textured', icon:'🍿', diff:3,
+    desc:'Similar to a bobble but more pronounced — five complete double crochets worked into one stitch, then folded and locked.',
+    uses:['Dimensional textiles','Baby blankets','Home decor','Statement accessories'],
+    steps:[
+      {t:'Work 5 dc into one stitch', d:'Make 5 COMPLETE double crochets all into the same stitch.',tip:'Unlike the bobble, these are fully completed stitches.'},
+      {t:'Remove hook, insert from front', d:'Slip your hook OUT of the working loop. Reinsert it from FRONT to BACK through the top of the FIRST of those 5 dc.',tip:''},
+      {t:'Pick up working loop', d:'Catch the working loop (the one you slipped off) onto the hook.',tip:''},
+      {t:'Pull through and chain to lock', d:'Draw the working loop through the first dc. Chain 1 to lock the popcorn in place.',tip:'The popcorn puffs up toward you on the right side — no need to flip.'},
+    ]
+  },
+  { id:'puff', name:'Puff Stitch', abbr:'puff', cat:'textured', icon:'☁️', diff:3,
+    desc:'A soft, rounded bump made from multiple half double crochets worked together. Softer than a bobble, fluffier than a popcorn.',
+    uses:['Textured scarves','Cosy blankets','Hats','Cushion covers'],
+    steps:[
+      {t:'Yarn over and pull up a loop (repeat)', d:'Yarn over, insert into stitch, pull up a loop — but pull it up to the height of about 1.5cm. Repeat this 2–4 more times into the SAME stitch.',tip:'Each "yarn over, pull up long loop" pair adds to the puff. 3 pairs (6 loops) is standard.'},
+      {t:'Count your loops', d:'After 3 repeats you should have 7 loops (including the standing loop). More repeats = fluffier puff.',tip:''},
+      {t:'Yarn over, pull through all loops', d:'Yarn over and draw through all loops on the hook at once.',tip:'Hold the growing puff in place with your non-hook hand as you pull through.'},
+      {t:'Chain 1 to lock', d:'Chain 1 to secure the puff stitch.',tip:''},
+    ]
+  },
+  { id:'shell', name:'Shell Stitch', abbr:'sh', cat:'textured', icon:'🐚', diff:2,
+    desc:'A fan of 5 (or more) double crochets worked into a single stitch, creating a shell or fan shape. Used in lacy, feminine designs.',
+    uses:['Lacy blankets','Baby shawls','Summer tops','Decorative edging'],
+    steps:[
+      {t:'Identify the stitch', d:'Find the designated stitch or space for your shell — typically noted as "5dc in next st" or "sh in ch-sp".',tip:''},
+      {t:'Work 5 dc into one place', d:'Work all 5 double crochets into the exact same stitch or space.',tip:'Keep tension even. The shell fans out naturally — don\'t fight it.'},
+      {t:'Skip surrounding stitches', d:'Shell patterns typically skip 2 stitches on either side of the shell placement.',tip:'The skipped stitches form the "valley" between shells.'},
+    ]
+  },
+  { id:'v-stitch', name:'V-Stitch', abbr:'V-st', cat:'textured', icon:'✌️', diff:2,
+    desc:'Two double crochets with a chain between them, worked into the same stitch. Creates an open, lacy V pattern across the fabric.',
+    uses:['Lacy shawls','Open mesh fabric','Baby blankets','Cowls'],
+    steps:[
+      {t:'Work dc into stitch', d:'Work one regular double crochet into the designated stitch or space.',tip:''},
+      {t:'Chain 1 (or 2)', d:'Chain 1 (for tighter V) or chain 2 (for more open V) in the same stitch.',tip:''},
+      {t:'Work second dc', d:'Work one more double crochet into the SAME stitch.',tip:'Both dc and the chain together form the V shape.'},
+      {t:'Skip stitches as instructed', d:'Skip the required number of stitches between each V-stitch placement.',tip:'In subsequent rows, work V-stitches into the ch-space at the center of each V below.'},
+    ]
+  },
+  { id:'granny-sq', name:'Granny Square', abbr:'GS', cat:'special', icon:'🔲', diff:2,
+    desc:'The iconic crochet motif. Clusters of double crochets worked in the round with chain spaces at each corner — infinitely versatile.',
+    uses:['Blankets and afghans','Bags','Garments','Joining motif projects'],
+    steps:[
+      {t:'Start with magic ring or ch-4 join', d:'Make a magic ring, or chain 4 and slip stitch to first chain to form a ring.',tip:''},
+      {t:'Round 1 — clusters', d:'Ch 3 (counts as first dc). Work 2 dc into ring. *Ch 2, work 3 dc* — repeat 3 more times. Ch 2, sl st to top of ch-3.',tip:'You now have 4 "cluster" groups and 4 corner ch-2 spaces.'},
+      {t:'Round 2 — growing corners', d:'Sl st into ch-2 corner sp. Ch 3, 2 dc, ch 2, 3 dc in same space (corner made). *Ch 1, then in next ch-2 sp: 3dc, ch2, 3dc* for each corner. End sl st.',tip:'Corners always get: 3dc, ch2, 3dc. Sides get one 3dc cluster.'},
+      {t:'Round 3+', d:'Each additional round adds one more cluster to each side, with the same corner formula: 3dc, ch2, 3dc.',tip:'Squares can be any size — just keep adding rounds!'},
+    ]
+  },
+  { id:'crocodile', name:'Crocodile Stitch', abbr:'cs', cat:'special', icon:'🐊', diff:4,
+    desc:'A layered scale stitch worked around "post" double crochets to create 3D overlapping scales. Stunning for bags and accessories.',
+    uses:['Scale-textured bags','Fingerless gloves','Shawls','Decorative panels'],
+    steps:[
+      {t:'Foundation: paired dc posts', d:'Work a foundation row of paired double crochets spaced evenly across. The paired dc form the "posts" for each scale.',tip:''},
+      {t:'Work first side of scale', d:'Join yarn and work 5 dc down around the left post of your first pair, working from top to base.',tip:'Work around the post (between front and back), not into it.'},
+      {t:'Work second side of scale', d:'Without turning, work 5 dc up around the right post of the same pair, from base back to top.',tip:'The two sets of dc create the overlapping "mouth" of the scale.'},
+      {t:'Close the scale', d:'Slip stitch to the top of the first dc of this scale to close it.',tip:''},
+      {t:'Move to next pair', d:'Chain 2 to bridge to the next pair of posts and repeat the scale process.',tip:'In subsequent rounds, work into the spaces BETWEEN scales from the previous row.'},
+    ]
+  },
+  { id:'tunisian', name:'Tunisian Simple Stitch', abbr:'Tss', cat:'special', icon:'🎋', diff:3,
+    desc:'A hybrid knit/crochet stitch worked on a special long hook (or extension cable). Creates a dense, flat fabric with a distinctive texture.',
+    uses:['Blankets','Scarves','Dishcloths','Tunisian intarsia patterns'],
+    steps:[
+      {t:'Forward pass — pick up loops', d:'Starting from right to left: insert hook into each stitch, yarn over and pull up a loop — leaving ALL loops on the hook.',tip:'You need a Tunisian/Afghan hook (long) or a regular hook with an extension cable for this.'},
+      {t:'Build up loops across the row', d:'Continue picking up one loop from every stitch. You\'ll end with many loops on your hook.',tip:'Count your loops as you go — you should have one per stitch plus the original standing loop.'},
+      {t:'Return pass — work off loops', d:'Now work from LEFT to RIGHT: yarn over, pull through the first loop. Then *yarn over, pull through 2 loops* — repeat across.',tip:'The return pass works off two loops at a time until one loop remains.'},
+      {t:'Repeat for each row', d:'Each row consists of two passes: forward (picks up) and return (works off). Never turn the work.',tip:'The fabric builds up in a woven-looking texture. The first stitch of each forward pass is usually skipped.'},
+    ]
+  },
+  { id:'join-as-you-go', name:'Join As You Go', abbr:'JAYG', cat:'special', icon:'🔗', diff:3,
+    desc:'A technique for joining crochet motifs (like granny squares) while working the final round, eliminating separate seaming.',
+    uses:['Motif blankets','Granny square projects','Seamless joining','Large assembly projects'],
+    steps:[
+      {t:'Work first motif completely', d:'Finish your first motif (e.g. granny square) with all rounds.',tip:''},
+      {t:'Start second motif', d:'Work all rounds of the second motif up to (but not including) the joining side.',tip:''},
+      {t:'Join at corner ch-2 space', d:'At the joining corner, instead of ch-2, work: ch-1, slip stitch into the corresponding corner ch-2 space of the first motif, ch-1.',tip:''},
+      {t:'Join along the side', d:'For each ch-1 side space on the second motif, work: ch, sl st into matching ch-1 space of first motif, ch.',tip:''},
+      {t:'Continue around second motif', d:'Work remaining non-joining sides normally and close the round.',tip:'You can JAYG multiple motifs simultaneously in a grid — work in rows and join as you close each final round.'},
+    ]
+  },
+  { id:'surface-sl', name:'Surface Slip Stitch', abbr:'SSS', cat:'special', icon:'✏️', diff:2,
+    desc:'Decorative slip stitches worked on top of a finished piece — like drawing with yarn on crochet fabric.',
+    uses:['Adding stripes and details','Lettering','Seaming with decorative joins','Color work on finished pieces'],
+    steps:[
+      {t:'Hold yarn behind work', d:'Hold your yarn on the wrong side. Insert hook from right side through a stitch or gap.',tip:''},
+      {t:'Catch the yarn', d:'Hook the yarn from behind and pull up a loop to the front (right side). One loop on hook.',tip:''},
+      {t:'Continue surface path', d:'Insert hook into next stitch along your desired path, catch yarn and pull through both the stitch AND the loop already on hook.',tip:'Keep consistent tension — neither too tight (puckers) nor too loose (loops floppy).'},
+      {t:'Follow your design', d:'Work along curves, lines, or shapes as planned. End by pulling tail to wrong side and weaving in.',tip:'You can work along any path — horizontally, vertically, diagonally.'},
+    ]
+  },
+  { id:'spiked', name:'Spike Stitch', abbr:'sp-st', cat:'textured', icon:'📌', diff:2,
+    desc:'A decorative stitch where you insert the hook one or more rows BELOW the current row — creating a long "spike" of yarn on the fabric surface.',
+    uses:['Color work patterns','Vertical stripe effects','Textured borders','Fair Isle-style crochet'],
+    steps:[
+      {t:'Identify rows below', d:'Count down 1–3 rows below where you are currently working. The spike is usually into the same column stitch.',tip:''},
+      {t:'Insert hook into lower row', d:'Push hook into the stitch below, through the full fabric.',tip:''},
+      {t:'Pull up a long loop', d:'Yarn over and pull up a loop tall enough to reach your working row without bunching.',tip:'The loop should be as tall as the number of rows you\'re spanning — don\'t pull too tight.'},
+      {t:'Complete as sc', d:'Yarn over and pull through both loops on hook to finish a spike single crochet.',tip:'Multiple spike stitches across a row create a colourwork stripe pattern.'},
+    ]
+  },
+  { id:'ccm', name:'Continuous Colour Change', abbr:'CC', cat:'special', icon:'🌈', diff:3,
+    desc:'Smoothly switching between yarn colors within a row or round by completing the last step of each stitch with the new color.',
+    uses:['Stripes','Tapestry crochet','Colorwork patterns','Geometric designs'],
+    steps:[
+      {t:'Work to last pull-through of stitch', d:'Work your stitch as normal but STOP before the very last yarn-over-pull-through step.',tip:'For sc: insert, pull up loop — stop before pulling through both loops.'},
+      {t:'Drop old color', d:'Leave the old color hanging on the wrong side. Pick up new color yarn.',tip:'Let it hang loosely — you may pick it up again later or carry it behind the work.'},
+      {t:'Complete stitch with new color', d:'Use the new color to yarn-over and pull through the remaining loops. The color change is complete.',tip:''},
+      {t:'Work next stitches in new color', d:'Continue with the new color. If short color sections, carry old yarn along the back and crochet over it.',tip:'Carrying yarn adds thickness — for long carries (more than 3–4 stitches), it\'s better to cut and rejoin.'},
+    ]
+  },
+  { id:'fpdc', name:'Front Post DC', abbr:'FPdc', cat:'textured', icon:'🔝', diff:2,
+    desc:'A double crochet worked around the POST (vertical bar) of a stitch from the front, creating a raised, three-dimensional ridge.',
+    uses:['Cable patterns','Ribbing','Basket weave stitch','Textured blankets'],
+    steps:[
+      {t:'Identify post to work around', d:'Find the double crochet stitch in the previous row you\'ll be working around — you\'re targeting the vertical post, not the top.',tip:''},
+      {t:'Yarn over', d:'Yarn over the hook as normal to start a dc.',tip:''},
+      {t:'Insert hook from front', d:'Insert hook from FRONT to BACK around the post of the designated stitch, then bring it to the front on the other side.',tip:'The hook should encircle the post — going behind the post and returning to the front.'},
+      {t:'Complete as dc', d:'Yarn over and pull up a loop (around the post, not through a stitch), then complete the remaining dc steps: yo, pull through 2; yo, pull through 2.',tip:'FPdc pushes to the FRONT of the fabric. Pair with BPdc for ribbing and cables.'},
+    ]
+  },
+  { id:'bpdc', name:'Back Post DC', abbr:'BPdc', cat:'textured', icon:'🔙', diff:2,
+    desc:'A double crochet worked around the POST of a stitch from the back, creating a recessed, three-dimensional channel.',
+    uses:['Cable patterns','Ribbing (alternated with FPdc)','Basket weave','Textured stitch patterns'],
+    steps:[
+      {t:'Yarn over', d:'Yarn over the hook as for a normal dc.',tip:''},
+      {t:'Insert hook from back', d:'Insert hook from BACK to FRONT around the post of the designated stitch — going around behind it.',tip:'The motion is the reverse of FPdc — you approach from the back this time.'},
+      {t:'Complete as dc', d:'Pull up a loop and finish the dc: yo, through 2; yo, through 2.',tip:'BPdc pushes to the BACK of the fabric, appearing as a "dip" from the front. Alternating FPdc and BPdc creates true crochet ribbing.'},
+    ]
+  },
+  { id:'invisible-dec', name:'Invisible Decrease', abbr:'invdec', cat:'special', icon:'👻', diff:2,
+    desc:'A neater alternative to sc2tog for decreasing stitches, especially in amigurumi. Reduces the gap that standard decreases leave.',
+    uses:['Amigurumi shaping','Any round decrease','Neater finishes'],
+    steps:[
+      {t:'Insert through front loops only', d:'Insert hook under the FRONT loop only of the first stitch (not both loops).',tip:'The front loop is the loop closer to you as you look at the piece.'},
+      {t:'Then front loop of next stitch', d:'Continue inserting through the front loop only of the NEXT stitch too. You now have 3 loops on hook.',tip:''},
+      {t:'Yarn over, pull through first two', d:'Yarn over and pull through both front loops only (the first 2 loops).',tip:''},
+      {t:'Yarn over, pull through last 2', d:'Yarn over and pull through the remaining 2 loops. Decrease complete.',tip:'The stitch lies much flatter and less gap-y than a standard sc2tog.'},
+    ]
+  },
+  { id:'picot', name:'Picot Stitch', abbr:'p', cat:'special', icon:'🔺', diff:2,
+    desc:'A small decorative point made from a short chain that\'s slip stitched back to its base. Used for edging and lace detail.',
+    uses:['Decorative edging','Lace patterns','Flower motifs','Finishing touches'],
+    steps:[
+      {t:'Chain 3 (or required number)', d:'Make 3 chain stitches (sometimes 4 or 5 depending on pattern — more chains = pointier picot).',tip:''},
+      {t:'Slip stitch back', d:'Insert hook back into the base of the chain (the stitch before the 3 chains you just made) and slip stitch.',tip:'Or, insert into the 3rd chain from hook for a free-standing picot point.'},
+      {t:'Continue edging', d:'Work the next stitches as instructed between picots.',tip:'Picots are usually spaced every 3–5 stitches for a lacy scallop edge.'},
+    ]
+  },
+  { id:'sc2tog', name:'SC2TOG (Decrease)', abbr:'sc2tog', cat:'basic', icon:'⬇️', diff:1,
+    desc:'Single crochet 2 together — the standard way to decrease one stitch, pulling two stitches into one.',
+    uses:['Shaping any project','Amigurumi shaping','Hat crowns','Reducing stitch count'],
+    steps:[
+      {t:'Insert hook into next stitch', d:'Insert hook into next stitch, pull up a loop. (2 loops on hook)',tip:''},
+      {t:'Insert hook into FOLLOWING stitch', d:'Without completing the first stitch, insert hook into the next stitch and pull up another loop. (3 loops on hook)',tip:''},
+      {t:'Yarn over, pull through all three', d:'Yarn over and draw through all 3 loops at once. One stitch decreased.',tip:'Use invdec for a neater finish in amigurumi — the gap is less visible.'},
+    ]
+  },
+  { id:'inc', name:'Increase', abbr:'inc', cat:'basic', icon:'⬆️', diff:1,
+    desc:'Working two stitches into the same stitch to increase your stitch count. The most basic way to add width or shape.',
+    uses:['Shaping pieces wider','Hat brims','Any project requiring increases','Amigurumi shaping'],
+    steps:[
+      {t:'Work first stitch normally', d:'Work a single crochet (or whatever stitch your pattern calls for) into the designated stitch.',tip:''},
+      {t:'Work second stitch into SAME place', d:'Without moving to the next stitch, work another stitch into the exact same spot.',tip:''},
+      {t:'Move on', d:'Continue to the next stitch. You\'ve increased by one!',tip:'In patterns this appears as "2 sc in next st" or simply "inc."'},
+    ]
+  },
+];
+
+// ═══════════════════════════════════════════════════
+// ABBREVIATION DATA
+// ═══════════════════════════════════════════════════
+const ABBR = [
+  {a:'ch',f:'chain'},{a:'sl st',f:'slip stitch'},{a:'sc',f:'single crochet'},{a:'hdc',f:'half double crochet'},
+  {a:'dc',f:'double crochet'},{a:'tr',f:'treble crochet'},{a:'dtr',f:'double treble crochet'},
+  {a:'yo',f:'yarn over'},{a:'sp',f:'space'},{a:'st',f:'stitch'},{a:'sts',f:'stitches'},
+  {a:'rep',f:'repeat'},{a:'pm',f:'place marker'},{a:'sm',f:'slip marker'},{a:'BLO',f:'back loop only'},
+  {a:'FLO',f:'front loop only'},{a:'MR',f:'magic ring'},{a:'RS',f:'right side'},{a:'WS',f:'wrong side'},
+  {a:'t-ch',f:'turning chain'},{a:'FPdc',f:'front post double crochet'},{a:'BPdc',f:'back post double crochet'},
+  {a:'dc2tog',f:'double crochet 2 together (decrease)'},{a:'sc2tog',f:'single crochet 2 together (decrease)'},
+  {a:'inc',f:'increase'},{a:'dec',f:'decrease'},{a:'sk',f:'skip'},{a:'rem',f:'remaining'},
+  {a:'beg',f:'beginning'},{a:'cont',f:'continue'},{a:'rnd',f:'round'},{a:'RS',f:'right side'},
+];
+
+// ═══════════════════════════════════════════════════
+// HOOK SIZE DATA
+// ═══════════════════════════════════════════════════
+const HOOKS = [
+  {mm:'2.0',us:'B/1',uk:'14',yarn:'Lace / Thread'},
+  {mm:'2.25',us:'B/1',uk:'13',yarn:'Thread / Fingering'},
+  {mm:'2.5',us:'C/2',uk:'12',yarn:'Fingering (1)'},
+  {mm:'2.75',us:'C/2',uk:'12',yarn:'Fingering (1)'},
+  {mm:'3.0',us:'D/3',uk:'10',yarn:'Sport (2)'},
+  {mm:'3.25',us:'D/3',uk:'10',yarn:'Sport (2)'},
+  {mm:'3.5',us:'E/4',uk:'9',yarn:'DK (3)'},
+  {mm:'3.75',us:'F/5',uk:'9',yarn:'DK (3)'},
+  {mm:'4.0',us:'G/6',uk:'8',yarn:'Worsted (4)'},
+  {mm:'4.5',us:'7',uk:'7',yarn:'Worsted (4)'},
+  {mm:'5.0',us:'H/8',uk:'6',yarn:'Worsted / Bulky'},
+  {mm:'5.5',us:'I/9',uk:'5',yarn:'Bulky (5)'},
+  {mm:'6.0',us:'J/10',uk:'4',yarn:'Bulky (5)'},
+  {mm:'6.5',us:'K/10.5',uk:'3',yarn:'Bulky (5)'},
+  {mm:'7.0',us:'K/10.5',uk:'2',yarn:'Super Bulky (6)'},
+  {mm:'8.0',us:'L/11',uk:'0',yarn:'Super Bulky (6)'},
+  {mm:'9.0',us:'M/13',uk:'00',yarn:'Super Bulky (6)'},
+  {mm:'10.0',us:'N/15',uk:'000',yarn:'Jumbo (7)'},
+  {mm:'12.0',us:'O/P',uk:'—',yarn:'Jumbo (7)'},
+  {mm:'15.0',us:'P/Q',uk:'—',yarn:'Jumbo (7)'},
+  {mm:'20.0+',us:'—',uk:'—',yarn:'Extreme / Arm crochet'},
+];
+
+// ═══════════════════════════════════════════════════
+// APP STATE
+// ═══════════════════════════════════════════════════
+let currentScreen = 'home';
+let currentProjectFilter = 'WIP';
+let counterMode = 'row';
+let counterVal = 0, counter2Val = 0;
+let counterGoal = 0;
+let timerInterval = null, timerSeconds = 0, timerRunning = false;
+let stitchCatFilter = 'all', stitchSearchVal = '';
+let editingProjectId = null;
+
+// ═══════════════════════════════════════════════════
+// NAVIGATION
+// ═══════════════════════════════════════════════════
+function goTo(screen) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+  const s = document.getElementById('screen-'+screen);
+  if (s) { s.classList.add('active'); }
+  const nb = document.getElementById('nav-'+screen);
+  if (nb) nb.classList.add('active');
+  currentScreen = screen;
+  updateTopBar();
+  if (screen === 'home') renderHome();
+  if (screen === 'projects') renderProjects();
+  if (screen === 'yarn') renderYarnStash();
+  if (screen === 'patterns') renderPatterns();
+  if (screen === 'stitches') renderStitchGrid();
+  if (screen === 'tools') renderHookTable();
+  document.getElementById('screens').scrollTop = 0;
+}
+
+function updateTopBar() {
+  const btn = document.getElementById('topAction');
+  const actions = {
+    projects: { text:'+ Project', fn:'openModal("modal-add-project")' },
+    yarn: { text:'+ Yarn', fn:'openModal("modal-add-yarn")' },
+    patterns: { text:'+ Pattern', fn:'openModal("modal-add-pattern")' },
+  };
+  if (actions[currentScreen]) {
+    btn.textContent = actions[currentScreen].text;
+    btn.setAttribute('onclick', actions[currentScreen].fn);
+    btn.style.display = 'inline-flex';
+  } else {
+    btn.style.display = 'none';
+  }
+}
+
+function handleTopAction() {}
+
+function openModal(id) { document.getElementById(id).classList.add('open'); }
+function closeModal(id) { document.getElementById(id).classList.remove('open'); }
+
+document.querySelectorAll('.modal-backdrop').forEach(m => {
+  m.addEventListener('click', e => { if (e.target === m) m.classList.remove('open'); });
+});
+
+// ═══════════════════════════════════════════════════
+// HOME
+// ═══════════════════════════════════════════════════
+function renderHome() {
+  const projects = LS.get('projects');
+  const yarns = LS.get('yarns');
+  const patterns = LS.get('patterns');
+  document.getElementById('stat-projects').textContent = projects.length;
+  document.getElementById('stat-yarns').textContent = yarns.length;
+  document.getElementById('stat-patterns').textContent = patterns.length;
+
+  // WIP list
+  const wip = projects.filter(p => p.status === 'WIP');
+  const wipEl = document.getElementById('home-wip-list');
+  if (!wip.length) {
+    wipEl.innerHTML = `<div class="empty-state" style="padding:32px 0"><div class="empty-icon">🪡</div><div class="empty-msg">No active projects yet</div><div style="margin-top:12px"><button class="btn btn-fill btn-sm" onclick="goTo('projects')">Start a project</button></div></div>`;
+  } else {
+    wipEl.innerHTML = wip.slice(0,3).map(p => `
+      <div class="card-sm" onclick="openProjectDetail('${p.id}')" style="cursor:pointer">
+        <div class="row-between" style="margin-bottom:6px">
+          <div style="font-size:15px;font-weight:600">${p.name}</div>
+          <div class="badge badge-rose">${p.type}</div>
+        </div>
+        <div class="progress-bar"><div class="progress-fill" style="width:${p.targetRows?Math.min(100,Math.round((p.rows/p.targetRows)*100)):0}%"></div></div>
+        <div style="font-size:12px;color:var(--muted);margin-top:4px">Row ${p.rows}${p.targetRows?' / '+p.targetRows:''} · Hook ${p.hook}</div>
+      </div>`).join('');
+  }
+
+  // Abbr grid
+  const abbrEl = document.getElementById('home-abbr-grid');
+  abbrEl.innerHTML = ABBR.slice(0,10).map(a => `
+    <div style="background:var(--cream-dark);border-radius:8px;padding:8px 10px">
+      <div style="font-size:13px;font-weight:700;color:var(--rose-dark)">${a.a}</div>
+      <div style="font-size:11px;color:var(--muted);margin-top:2px;line-height:1.3">${a.f}</div>
+    </div>`).join('');
+}
+
+// ═══════════════════════════════════════════════════
+// PROJECTS
+// ═══════════════════════════════════════════════════
+function filterProjects(status) {
+  currentProjectFilter = status;
+  document.querySelectorAll('#proj-tabs .tab-btn').forEach((b,i) => {
+    b.classList.toggle('active', ['WIP','finished','frogged'][i] === status);
+  });
+  renderProjects();
+}
+
+function renderProjects() {
+  const all = LS.get('projects');
+  const filtered = all.filter(p => p.status === currentProjectFilter);
+  const el = document.getElementById('project-list');
+  if (!filtered.length) {
+    const msgs = {WIP:'Cast on something new!', finished:'No finished projects yet.', frogged:'Nothing frogged — lucky you!'};
+    el.innerHTML = `<div class="empty-state"><div class="empty-icon">🧶</div><div class="empty-msg">${msgs[currentProjectFilter]}</div></div>`;
+    return;
+  }
+  el.innerHTML = filtered.map(p => `
+    <div class="card" onclick="openProjectDetail('${p.id}')" style="cursor:pointer">
+      <div class="row-between" style="margin-bottom:6px">
+        <h3>${p.name}</h3>
+        <span class="badge ${p.status==='WIP'?'badge-rose':p.status==='finished'?'badge-sage':'badge-muted'}">${p.type}</span>
+      </div>
+      <div style="font-size:13px;color:var(--muted);margin-bottom:8px">Hook ${p.hook} · ${p.yarnWeight}</div>
+      <div class="progress-bar"><div class="progress-fill" style="width:${p.targetRows?Math.min(100,Math.round((p.rows/p.targetRows)*100)):0}%;background:${p.status==='finished'?'var(--sage)':'var(--rose)'}"></div></div>
+      <div style="font-size:12px;color:var(--muted);margin-top:4px">Row ${p.rows}${p.targetRows?' / '+p.targetRows+' ('+Math.min(100,Math.round((p.rows/p.targetRows)*100))+'%)':''}</div>
+    </div>`).join('');
+}
+
+function openProjectDetail(id) {
+  const projects = LS.get('projects');
+  const p = projects.find(pr => pr.id === id);
+  if (!p) return;
+  const pct = p.targetRows ? Math.min(100, Math.round((p.rows/p.targetRows)*100)) : 0;
+  document.getElementById('project-detail-content').innerHTML = `
+    <div class="row-between" style="margin-bottom:16px">
+      <button class="btn btn-sm" onclick="goTo('projects')">‹ Back</button>
+      <div style="display:flex;gap:8px">
+        <button class="btn btn-sm btn-sage btn-fill" onclick="incrementProjectRow('${p.id}')">+Row</button>
+        <button class="btn btn-sm" onclick="editProject('${p.id}')">Edit</button>
+        <button class="btn btn-sm" style="color:var(--rose);border-color:var(--rose)" onclick="deleteProject('${p.id}')">Delete</button>
+      </div>
+    </div>
+    <div class="card">
+      <div class="row-between" style="margin-bottom:8px">
+        <h2 style="font-size:20px">${p.name}</h2>
+        <span class="badge ${p.status==='WIP'?'badge-rose':p.status==='finished'?'badge-sage':'badge-muted'}">${p.status==='WIP'?'In Progress':p.status==='finished'?'Finished':'Frogged'}</span>
+      </div>
+      <div style="font-size:14px;color:var(--muted);margin-bottom:12px">${p.type} · Hook ${p.hook} · ${p.yarnWeight}</div>
+      <div class="progress-bar" style="height:8px;margin-bottom:6px"><div class="progress-fill" style="width:${pct}%;height:8px;background:${p.status==='finished'?'var(--sage)':'var(--rose)'}"></div></div>
+      <div style="font-size:13px;color:var(--muted)">Row <strong>${p.rows}</strong>${p.targetRows?' of '+p.targetRows+' ('+pct+'%)'':''}</div>
+    </div>
+    ${p.notes ? `<div class="card"><div style="font-size:13px;color:var(--charcoal-soft);line-height:1.6">${p.notes}</div></div>` : ''}
+    <div class="section-label">Quick Actions</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+      <button class="btn btn-sage btn-fill btn-full" onclick="setProjectStatus('${p.id}','finished')">Mark Finished ✓</button>
+      <button class="btn btn-full" onclick="setProjectStatus('${p.id}','frogged')">Mark Frogged 🐸</button>
+    </div>
+    <div class="section-label">Adjust Row Count</div>
+    <div class="card" style="display:flex;align-items:center;gap:16px;justify-content:center;padding:16px">
+      <button class="counter-big-btn btn-minus" style="width:54px;height:54px;font-size:24px" onclick="changeProjectRows('${p.id}',-1)">−</button>
+      <div style="text-align:center">
+        <div style="font-size:36px;font-weight:700;color:var(--charcoal)" id="pd-rows">${p.rows}</div>
+        <div style="font-size:12px;color:var(--muted)">rows</div>
+      </div>
+      <button class="counter-big-btn btn-plus" style="width:54px;height:54px;font-size:24px" onclick="changeProjectRows('${p.id}',1)">+</button>
+    </div>
+    <p style="height:20px"></p>
+  `;
+  const sub = document.querySelectorAll('.screen');
+  sub.forEach(s => s.classList.remove('active'));
+  document.getElementById('screen-project-detail').classList.add('active');
+  document.getElementById('topAction').style.display = 'none';
+}
+
+function changeProjectRows(id, delta) {
+  const projects = LS.get('projects');
+  const p = projects.find(pr => pr.id === id);
+  if (!p) return;
+  p.rows = Math.max(0, (p.rows || 0) + delta);
+  LS.set('projects', projects);
+  const el = document.getElementById('pd-rows');
+  if (el) el.textContent = p.rows;
+}
+
+function incrementProjectRow(id) { changeProjectRows(id, 1); }
+
+function setProjectStatus(id, status) {
+  const projects = LS.get('projects');
+  const p = projects.find(pr => pr.id === id);
+  if (p) { p.status = status; LS.set('projects', projects); }
+  openProjectDetail(id);
+}
+
+function deleteProject(id) {
+  if (!confirm('Delete this project?')) return;
+  const projects = LS.get('projects').filter(p => p.id !== id);
+  LS.set('projects', projects);
+  goTo('projects');
+}
+
+function saveProject() {
+  const name = document.getElementById('proj-name').value.trim();
+  if (!name) return alert('Please enter a project name.');
+  const projects = LS.get('projects');
+  const id = 'p_' + Date.now();
+  projects.push({
+    id, name,
+    type: document.getElementById('proj-type').value,
+    hook: document.getElementById('proj-hook').value,
+    yarnWeight: document.getElementById('proj-yarn-weight').value,
+    notes: document.getElementById('proj-notes').value.trim(),
+    targetRows: parseInt(document.getElementById('proj-target-rows').value) || 0,
+    rows: 0,
+    status: 'WIP',
+    created: Date.now()
+  });
+  LS.set('projects', projects);
+  document.getElementById('proj-name').value = '';
+  document.getElementById('proj-notes').value = '';
+  document.getElementById('proj-target-rows').value = '';
+  closeModal('modal-add-project');
+  renderProjects();
+}
+
+// ═══════════════════════════════════════════════════
+// COUNTER
+// ═══════════════════════════════════════════════════
+function setCounterMode(mode) {
+  counterMode = mode;
+  document.getElementById('cnt-tab-row').classList.toggle('active', mode==='row');
+  document.getElementById('cnt-tab-stitch').classList.toggle('active', mode==='stitch');
+  document.getElementById('counter-mode-label').textContent = mode==='row' ? 'Row' : 'Stitch';
+}
+
+function adjustCounter(delta) {
+  counterVal = Math.max(0, counterVal + delta);
+  renderCounter();
+}
+function adjustCounter2(delta) {
+  counter2Val = Math.max(0, counter2Val + delta);
+  document.getElementById('counter2-display').textContent = counter2Val;
+}
+
+function renderCounter() {
+  document.getElementById('counter-display').textContent = counterVal;
+  const goal = counterGoal;
+  const ring = document.getElementById('ring-progress');
+  if (goal > 0) {
+    const pct = Math.min(1, counterVal / goal);
+    const circum = 440;
+    ring.style.strokeDashoffset = circum * (1 - pct);
+    ring.style.stroke = pct >= 1 ? 'var(--sage)' : 'var(--rose)';
+    document.getElementById('counter-goal-display').textContent = `${counterVal} / ${goal} (${Math.round(pct*100)}%)`;
+  } else {
+    ring.style.strokeDashoffset = 440 - Math.min(counterVal * 8.8, 440);
+  }
+}
+
+function resetCounter() { counterVal = 0; counterGoal = 0; document.getElementById('counter-goal-display').textContent = ''; renderCounter(); }
+function setCounterTarget() { openModal('modal-goal'); }
+function confirmGoal() {
+  counterGoal = parseInt(document.getElementById('goal-input').value) || 0;
+  closeModal('modal-goal');
+  renderCounter();
+}
+
+// Timer
+function toggleTimer() {
+  if (timerRunning) {
+    clearInterval(timerInterval);
+    timerRunning = false;
+    document.getElementById('timer-btn').textContent = 'Resume';
+  } else {
+    timerRunning = true;
+    document.getElementById('timer-btn').textContent = 'Pause';
+    timerInterval = setInterval(() => { timerSeconds++; renderTimer(); }, 1000);
+  }
+}
+function resetTimer() {
+  clearInterval(timerInterval);
+  timerRunning = false;
+  timerSeconds = 0;
+  document.getElementById('timer-btn').textContent = 'Start';
+  renderTimer();
+}
+function renderTimer() {
+  const h = Math.floor(timerSeconds / 3600);
+  const m = Math.floor((timerSeconds % 3600) / 60);
+  const s = timerSeconds % 60;
+  document.getElementById('timer-display').textContent = `${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
+}
+
+// ═══════════════════════════════════════════════════
+// STITCHES
+// ═══════════════════════════════════════════════════
+function renderStitchGrid() {
+  const grid = document.getElementById('stitch-grid');
+  let list = STITCHES;
+  if (stitchCatFilter !== 'all') list = list.filter(s => s.cat === stitchCatFilter);
+  if (stitchSearchVal) list = list.filter(s => s.name.toLowerCase().includes(stitchSearchVal.toLowerCase()) || s.abbr.toLowerCase().includes(stitchSearchVal.toLowerCase()));
+  grid.innerHTML = list.map(s => `
+    <div class="stitch-card" onclick="openStitchModal('${s.id}')">
+      <span class="stitch-icon">${s.icon}</span>
+      <div class="stitch-name">${s.name}</div>
+      <div class="stitch-abbr">${s.abbr}</div>
+      <div style="margin-top:6px">${diffDots(s.diff)}</div>
+    </div>`).join('');
+}
+
+function filterStitchCat(cat, el) {
+  stitchCatFilter = cat;
+  document.querySelectorAll('#stitch-cats .tab-btn').forEach(b => b.classList.remove('active'));
+  if (el) el.classList.add('active');
+  renderStitchGrid();
+}
+function filterStitches(val) { stitchSearchVal = val; renderStitchGrid(); }
+
+function diffDots(n) {
+  return `<div class="diff-dots">${[1,2,3,4,5].map(i=>`<div class="diff-dot${i<=n?' on':''}"></div>`).join('')}</div>`;
+}
+
+function openStitchModal(id) {
+  const s = STITCHES.find(st => st.id === id);
+  if (!s) return;
+  document.getElementById('stitch-modal-inner').innerHTML = `
+    <div style="display:flex;align-items:flex-start;gap:12px;margin-bottom:16px">
+      <div style="font-size:44px;line-height:1">${s.icon}</div>
+      <div>
+        <div class="modal-title">${s.name}</div>
+        <div style="font-size:15px;color:var(--rose);font-weight:700">${s.abbr}</div>
+        <div style="margin-top:4px">${diffDots(s.diff)}</div>
+      </div>
+    </div>
+    <p style="font-size:14px;color:var(--charcoal-soft);line-height:1.65;margin-bottom:14px">${s.desc}</p>
+    <div class="section-label" style="margin-top:0">Best used for</div>
+    <div class="tags-row" style="margin-bottom:16px">${s.uses.map(u=>`<span class="tag">${u}</span>`).join('')}</div>
+    <div class="section-label">Step-by-step guide</div>
+    ${s.steps.map((st,i) => `
+      <div class="step-item">
+        <div class="step-num">${i+1}</div>
+        <div>
+          <div style="font-size:14px;font-weight:600;color:var(--charcoal);margin-bottom:3px">${st.t}</div>
+          <div class="step-text">${st.d}</div>
+          ${st.tip ? `<div class="step-tip">💡 ${st.tip}</div>` : ''}
+        </div>
+      </div>`).join('')}
+    <div style="height:8px"></div>
+  `;
+  openModal('modal-stitch');
+}
+
+// ═══════════════════════════════════════════════════
+// YARN STASH
+// ═══════════════════════════════════════════════════
+function renderYarnStash() {
+  const yarns = LS.get('yarns');
+  const el = document.getElementById('yarn-list');
+  if (!yarns.length) {
+    el.innerHTML = `<div class="empty-state"><div class="empty-icon">🎀</div><div class="empty-msg">Your stash is empty — time to go shopping!</div></div>`;
+    return;
+  }
+  el.innerHTML = yarns.map(y => `
+    <div class="card" style="display:flex;align-items:flex-start;gap:12px">
+      <div class="swatch" style="background:${y.color};margin-top:2px"></div>
+      <div style="flex:1;min-width:0">
+        <div style="font-size:15px;font-weight:600;margin-bottom:2px">${y.name}</div>
+        <div style="font-size:12px;color:var(--muted);margin-bottom:6px">${y.weight} · ${y.fiber || '—'}</div>
+        <div style="display:flex;flex-wrap:wrap;gap:6px">
+          <span class="badge badge-muted">${y.skeins} skein${y.skeins!=1?'s':''}</span>
+          ${y.meterage ? `<span class="badge badge-sage">${y.skeins*y.meterage}m total</span>` : ''}
+        </div>
+        ${y.notes ? `<div style="font-size:12px;color:var(--muted);margin-top:6px;line-height:1.5">${y.notes}</div>` : ''}
+      </div>
+      <button style="border:none;background:none;color:var(--muted);cursor:pointer;padding:4px;font-size:18px" onclick="deleteYarn('${y.id}')">×</button>
+    </div>`).join('');
+}
+
+function saveYarn() {
+  const name = document.getElementById('yarn-name').value.trim();
+  if (!name) return alert('Please enter a yarn name.');
+  const yarns = LS.get('yarns');
+  yarns.push({
+    id: 'y_'+Date.now(), name,
+    weight: document.getElementById('yarn-weight').value,
+    fiber: document.getElementById('yarn-fiber').value.trim(),
+    meterage: parseInt(document.getElementById('yarn-meterage').value) || 0,
+    skeins: parseInt(document.getElementById('yarn-skeins').value) || 1,
+    color: document.getElementById('yarn-color').value,
+    notes: document.getElementById('yarn-notes').value.trim(),
+  });
+  LS.set('yarns', yarns);
+  ['yarn-name','yarn-fiber','yarn-meterage','yarn-notes'].forEach(id => document.getElementById(id).value='');
+  document.getElementById('yarn-skeins').value = '1';
+  closeModal('modal-add-yarn');
+  renderYarnStash();
+}
+
+function deleteYarn(id) {
+  if (!confirm('Remove this yarn?')) return;
+  LS.set('yarns', LS.get('yarns').filter(y => y.id !== id));
+  renderYarnStash();
+}
+
+// ═══════════════════════════════════════════════════
+// PATTERNS
+// ═══════════════════════════════════════════════════
+function renderPatterns() {
+  const patterns = LS.get('patterns');
+  const el = document.getElementById('pattern-list');
+  if (!patterns.length) {
+    el.innerHTML = `<div class="empty-state"><div class="empty-icon">📋</div><div class="empty-msg">Save patterns to your library</div></div>`;
+    return;
+  }
+  el.innerHTML = patterns.map(p => `
+    <div class="card" style="cursor:pointer">
+      <div class="row-between" style="margin-bottom:6px">
+        <div style="font-size:15px;font-weight:600">${p.name}</div>
+        ${diffDotsStatic(parseInt(p.diff))}
+      </div>
+      <div style="font-size:13px;color:var(--muted);margin-bottom:8px">${p.source || 'No source'}</div>
+      ${p.tags ? `<div class="tags-row">${p.tags.split(',').map(t=>`<span class="tag">${t.trim()}</span>`).join('')}</div>` : ''}
+      ${p.notes ? `<div style="font-size:13px;color:var(--charcoal-soft);margin-top:10px;line-height:1.6;white-space:pre-wrap">${p.notes}</div>` : ''}
+      ${p.url ? `<a href="${p.url}" target="_blank" style="font-size:13px;color:var(--rose-dark);display:block;margin-top:8px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${p.url}</a>` : ''}
+      <div style="margin-top:10px;text-align:right"><button class="btn btn-sm" style="color:var(--rose);border-color:var(--rose)" onclick="deletePattern('${p.id}')">Delete</button></div>
+    </div>`).join('');
+}
+
+function diffDotsStatic(n) {
+  const labels = ['','Beginner','Easy','Intermediate','Advanced','Expert'];
+  return `<span class="badge badge-rose" style="font-size:11px">${labels[n]||''}</span>`;
+}
+
+function savePattern() {
+  const name = document.getElementById('pat-name').value.trim();
+  if (!name) return alert('Please enter a pattern name.');
+  const patterns = LS.get('patterns');
+  patterns.push({
+    id: 'pat_'+Date.now(), name,
+    source: document.getElementById('pat-source').value.trim(),
+    diff: document.getElementById('pat-diff').value,
+    tags: document.getElementById('pat-tags').value.trim(),
+    notes: document.getElementById('pat-notes').value.trim(),
+    url: document.getElementById('pat-url').value.trim(),
+  });
+  LS.set('patterns', patterns);
+  ['pat-name','pat-source','pat-tags','pat-notes','pat-url'].forEach(id => document.getElementById(id).value='');
+  closeModal('modal-add-pattern');
+  renderPatterns();
+}
+
+function deletePattern(id) {
+  if (!confirm('Delete this pattern?')) return;
+  LS.set('patterns', LS.get('patterns').filter(p => p.id !== id));
+  renderPatterns();
+}
+
+// ═══════════════════════════════════════════════════
+// TOOLS
+// ═══════════════════════════════════════════════════
+function showToolTab(tab, el) {
+  document.querySelectorAll('.tool-panel').forEach(p => p.style.display = 'none');
+  document.getElementById('tool-'+tab).style.display = 'block';
+  document.querySelectorAll('#tools-tabs .tab-btn').forEach(b => b.classList.remove('active'));
+  if (el) el.classList.add('active');
+}
+
+function renderHookTable() {
+  const t = document.getElementById('hook-table');
+  t.innerHTML = `<thead><tr><th>mm</th><th>US</th><th>UK</th><th>Yarn Weight</th></tr></thead><tbody>${HOOKS.map(h=>`<tr><td><strong>${h.mm}</strong></td><td>${h.us}</td><td>${h.uk}</td><td style="color:var(--muted);font-size:13px">${h.yarn}</td></tr>`).join('')}</tbody>`;
+}
+
+function calcGauge() {
+  const sw = parseFloat(document.getElementById('g-swatch-sts').value);
+  const sr = parseFloat(document.getElementById('g-swatch-rows').value);
+  const ww = parseFloat(document.getElementById('g-swatch-w').value);
+  const wh = parseFloat(document.getElementById('g-swatch-h').value);
+  const tw = parseFloat(document.getElementById('g-target-w').value);
+  const th = parseFloat(document.getElementById('g-target-h').value);
+  const el = document.getElementById('gauge-result');
+  if (!sw||!sr||!ww||!wh) { el.innerHTML='<p style="color:var(--rose)">Please fill in swatch values.</p>'; return; }
+  const stsPerCm = sw/ww, rowsPerCm = sr/wh;
+  let html = `<div class="card-sm" style="background:var(--sage-light)">
+    <div style="font-size:13px;color:var(--sage-dark);font-weight:600;margin-bottom:8px">Your Gauge</div>
+    <div style="font-size:14px;color:var(--charcoal-soft)"><strong>${stsPerCm.toFixed(1)}</strong> sts/cm · <strong>${rowsPerCm.toFixed(1)}</strong> rows/cm</div>
+  </div>`;
+  if (tw && th) {
+    const castOn = Math.round(tw * stsPerCm);
+    const totalRows = Math.round(th * rowsPerCm);
+    html += `<div class="card-sm" style="margin-top:8px">
+      <div style="font-size:13px;color:var(--muted);margin-bottom:6px">For a ${tw}×${th}cm piece:</div>
+      <div style="font-size:15px;font-weight:600;color:var(--charcoal)">Cast on <span style="color:var(--rose-dark)">${castOn}</span> stitches</div>
+      <div style="font-size:15px;font-weight:600;color:var(--charcoal)">Work <span style="color:var(--rose-dark)">${totalRows}</span> rows</div>
+    </div>`;
+  }
+  el.innerHTML = html;
+}
+
+function filterGlossary(val) {
+  const el = document.getElementById('glossary-list');
+  const list = val ? ABBR.filter(a => a.a.toLowerCase().includes(val.toLowerCase()) || a.f.toLowerCase().includes(val.toLowerCase())) : ABBR;
+  el.innerHTML = list.map(a => `
+    <div class="card-sm" style="display:flex;align-items:center;gap:12px">
+      <div style="font-size:15px;font-weight:700;color:var(--rose-dark);min-width:64px">${a.a}</div>
+      <div style="font-size:14px;color:var(--charcoal-soft)">${a.f}</div>
+    </div>`).join('') || '<p style="color:var(--muted);padding:16px 0">No results found.</p>';
+}
+
+// ═══════════════════════════════════════════════════
+// INIT
+// ═══════════════════════════════════════════════════
+renderHome();
+renderStitchGrid();
+renderHookTable();
+filterGlossary('');
+</script>
+</body>
+</html>
