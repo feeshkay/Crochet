@@ -148,39 +148,7 @@
   .diff-dots { display: flex; gap: 4px; }
   .diff-dot { width: 10px; height: 10px; border-radius: 50%; background: var(--border-med); }
   .diff-dot.on { background: var(--rose); }
-  /* ── TUTORIAL OVERLAY ── */
-  .tutorial-overlay { position: fixed; inset: 0; z-index: 200; background: var(--bg); display: flex; flex-direction: column; transform: translateX(100%); transition: transform .28s cubic-bezier(.4,0,.2,1); pointer-events: none; }
-  .tutorial-overlay.open { transform: translateX(0); pointer-events: all; }
-  .tut-header { padding: calc(var(--safe-top) + 14px) 16px 14px; border-bottom: 0.5px solid var(--border); display: flex; align-items: center; gap: 10px; background: var(--bg); }
-  .tut-close { width: 36px; height: 36px; border-radius: 50%; border: 1px solid var(--border-med); background: none; display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 18px; color: var(--muted); flex-shrink: 0; }
-  .tut-progress-wrap { flex: 1; display: flex; align-items: center; gap: 6px; }
-  .tut-prog-dot { height: 4px; border-radius: 2px; flex: 1; background: var(--border); transition: background .2s; }
-  .tut-prog-dot.done { background: var(--rose); }
-  .tut-prog-dot.active { background: var(--rose-dark); }
-  .tut-body { flex: 1; overflow-y: auto; -webkit-overflow-scrolling: touch; padding: 0 0 100px; }
-  .tut-step-wrap { padding: 20px 18px; }
-  .tut-step-num-badge { display: inline-flex; align-items: center; gap: 7px; background: var(--rose-light); border-radius: 50px; padding: 5px 14px 5px 8px; margin-bottom: 14px; }
-  .tut-step-num-circle { width: 26px; height: 26px; border-radius: 50%; background: var(--rose); color: #fff; font-size: 13px; font-weight: 700; display: flex; align-items: center; justify-content: center; }
-  .tut-step-total { font-size: 12px; color: var(--rose-dark); font-weight: 600; }
-  .tut-step-title { font-size: 22px; font-weight: 700; color: var(--charcoal); line-height: 1.2; margin-bottom: 12px; letter-spacing: -0.4px; }
-  .tut-step-desc { font-size: 16px; color: var(--charcoal-soft); line-height: 1.7; margin-bottom: 16px; }
-  .tut-tip-box { background: var(--sage-light); border-left: 3px solid var(--sage); border-radius: 0 var(--radius-sm) var(--radius-sm) 0; padding: 12px 14px; font-size: 14px; color: var(--sage-dark); line-height: 1.6; }
-  .tut-tip-label { font-size: 11px; font-weight: 700; letter-spacing: 0.5px; text-transform: uppercase; color: var(--sage); margin-bottom: 4px; }
-  .tut-diagram { background: var(--cream-dark); border-radius: var(--radius); margin: 16px 0; padding: 20px; display: flex; align-items: center; justify-content: center; min-height: 140px; }
-  .tut-footer { position: fixed; bottom: 0; left: 0; right: 0; background: var(--bg); border-top: 0.5px solid var(--border); padding: 12px 18px calc(12px + var(--safe-bottom)); display: flex; gap: 10px; align-items: center; }
-  .tut-stitch-header { background: var(--cream-dark); padding: 20px 18px 16px; border-bottom: 0.5px solid var(--border); }
-  .tut-stitch-meta { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; margin-top: 8px; }
-  .tut-uses-scroll { display: flex; gap: 8px; overflow-x: auto; padding: 12px 18px; -webkit-overflow-scrolling: touch; scrollbar-width: none; }
-  .tut-uses-scroll::-webkit-scrollbar { display: none; }
-  .tut-use-chip { flex-shrink: 0; background: var(--card-bg); border: 0.5px solid var(--border-med); border-radius: 50px; padding: 6px 14px; font-size: 13px; color: var(--charcoal-soft); white-space: nowrap; }
-  .tut-section-label { font-size: 11px; font-weight: 700; letter-spacing: 0.6px; text-transform: uppercase; color: var(--muted); padding: 16px 18px 6px; }
-  .tut-step-card { margin: 0 18px 10px; background: var(--card-bg); border: 0.5px solid var(--border); border-radius: var(--radius); padding: 14px; cursor: pointer; transition: border-color .15s; }
-  .tut-step-card.active-card { border-color: var(--rose); background: var(--rose-light); }
-  .tut-step-card-head { display: flex; align-items: center; gap: 10px; }
-  .tut-step-card-num { width: 24px; height: 24px; border-radius: 50%; background: var(--rose); color: #fff; font-size: 12px; font-weight: 700; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
-  .tut-step-card-title { font-size: 14px; font-weight: 600; color: var(--charcoal); }
-  .tut-step-card-body { font-size: 13px; color: var(--charcoal-soft); line-height: 1.6; margin-top: 8px; padding-left: 34px; }
-  .tut-step-card-tip { font-size: 12px; color: var(--sage-dark); font-style: italic; margin-top: 6px; padding-left: 34px; }
+
 
   .row-between { display: flex; align-items: center; justify-content: space-between; }
   .divider { height: 0.5px; background: var(--border); margin: 12px 0; }
@@ -496,22 +464,7 @@
 
 </div><!-- /app-wrap -->
 
-<!-- ═══ TUTORIAL OVERLAY ═══ -->
-<div class="tutorial-overlay" id="tutorial-overlay">
-  <!-- header: close + progress dots -->
-  <div class="tut-header">
-    <button class="tut-close" onclick="closeTutorial()" aria-label="Close tutorial">×</button>
-    <div class="tut-progress-wrap" id="tut-progress-dots"></div>
-    <div style="font-size:12px;color:var(--muted);flex-shrink:0" id="tut-step-counter"></div>
-  </div>
-  <!-- scrollable content -->
-  <div class="tut-body" id="tut-body"></div>
-  <!-- footer nav -->
-  <div class="tut-footer">
-    <button class="btn btn-full" id="tut-prev" onclick="tutNav(-1)">‹ Prev</button>
-    <button class="btn btn-fill btn-full" id="tut-next" onclick="tutNav(1)">Next ›</button>
-  </div>
-</div>
+
 
 <!-- ═══ MODALS ═══ -->
 <!-- Add Project -->
@@ -1252,9 +1205,6 @@ function openStitchModal(id) {
       </div>
     </div>
     <p style="font-size:13px;color:var(--charcoal-soft);line-height:1.65;margin-bottom:12px">${s.desc}</p>
-    <button class="btn btn-fill btn-full" style="margin-bottom:14px" onclick="closeModal('modal-stitch');openTutorial('${s.id}')">
-      ▶ Start Step-by-Step Tutorial
-    </button>
     <div class="section-label" style="margin-top:0">Best used for</div>
     <div class="tags-row" style="margin-bottom:14px">${s.uses.map(u=>`<span class="tag">${u}</span>`).join('')}</div>
     <div class="section-label">All steps at a glance</div>
@@ -1428,197 +1378,6 @@ function filterGlossary(val) {
       <div style="font-size:14px;color:var(--charcoal-soft)">${a.f}</div>
     </div>`).join('') || '<p style="color:var(--muted);padding:16px 0">No results found.</p>';
 }
-
-// ═══════════════════════════════════════════════════
-// TUTORIAL ENGINE
-// ═══════════════════════════════════════════════════
-let tutStitch = null;
-let tutStep = 0;
-
-// SVG diagrams for each step concept (simplified illustrative glyphs)
-const STEP_DIAGRAMS = {
-  'insert hook': `<svg viewBox="0 0 180 90" width="180" height="90" xmlns="http://www.w3.org/2000/svg">
-    <rect x="10" y="30" width="160" height="30" rx="4" fill="#F0EBE1" stroke="#D8D2CC" stroke-width="1"/>
-    <text x="90" y="50" text-anchor="middle" font-size="11" fill="#8A8480" font-family="sans-serif">stitch</text>
-    <line x1="90" y1="5" x2="90" y2="28" stroke="#A5607A" stroke-width="3" stroke-linecap="round"/>
-    <polygon points="85,26 95,26 90,34" fill="#A5607A"/>
-    <text x="90" y="80" text-anchor="middle" font-size="10" fill="#D4859A" font-family="sans-serif">↑ insert hook here</text>
-  </svg>`,
-  'yarn over': `<svg viewBox="0 0 180 90" width="180" height="90" xmlns="http://www.w3.org/2000/svg">
-    <line x1="50" y1="45" x2="130" y2="45" stroke="#D8D2CC" stroke-width="4" stroke-linecap="round"/>
-    <path d="M 70 45 Q 90 20 110 45" fill="none" stroke="#D4859A" stroke-width="3" stroke-linecap="round"/>
-    <circle cx="70" cy="45" r="5" fill="#A5607A"/>
-    <text x="90" y="75" text-anchor="middle" font-size="10" fill="#D4859A" font-family="sans-serif">wrap yarn over hook</text>
-  </svg>`,
-  'pull': `<svg viewBox="0 0 180 90" width="180" height="90" xmlns="http://www.w3.org/2000/svg">
-    <circle cx="60" cy="45" r="12" fill="none" stroke="#D8D2CC" stroke-width="2"/>
-    <circle cx="90" cy="45" r="12" fill="none" stroke="#D4859A" stroke-width="2"/>
-    <line x1="78" y1="45" x2="115" y2="45" stroke="#A5607A" stroke-width="3" stroke-linecap="round"/>
-    <polygon points="112,40 122,45 112,50" fill="#A5607A"/>
-    <text x="90" y="78" text-anchor="middle" font-size="10" fill="#D4859A" font-family="sans-serif">pull through loops</text>
-  </svg>`,
-  'default': `<svg viewBox="0 0 180 90" width="180" height="90" xmlns="http://www.w3.org/2000/svg">
-    <path d="M 20 55 Q 60 20 90 45 Q 120 70 160 35" fill="none" stroke="#D4859A" stroke-width="3" stroke-linecap="round"/>
-    <circle cx="20" cy="55" r="5" fill="#A5607A"/>
-    <circle cx="160" cy="35" r="5" fill="#7A9E87"/>
-    <text x="90" y="78" text-anchor="middle" font-size="10" fill="#8A8480" font-family="sans-serif">crochet studio</text>
-  </svg>`,
-};
-
-function getDiagram(stepTitle) {
-  const t = stepTitle.toLowerCase();
-  if (t.includes('insert')) return STEP_DIAGRAMS['insert hook'];
-  if (t.includes('yarn over')) return STEP_DIAGRAMS['yarn over'];
-  if (t.includes('pull') || t.includes('draw')) return STEP_DIAGRAMS['pull'];
-  return STEP_DIAGRAMS['default'];
-}
-
-function openTutorial(stitchId) {
-  const s = STITCHES.find(st => st.id === stitchId);
-  if (!s) return;
-  tutStitch = s;
-  tutStep = 0;
-  renderTutorialStep();
-  document.getElementById('tutorial-overlay').classList.add('open');
-  document.body.style.overflow = 'hidden';
-}
-
-function closeTutorial() {
-  document.getElementById('tutorial-overlay').classList.remove('open');
-  document.body.style.overflow = '';
-  tutStitch = null;
-}
-
-function tutNav(delta) {
-  if (!tutStitch) return;
-  const total = tutStitch.steps.length;
-  // Phase 0 = intro, 1..N = steps, N+1 = done
-  const maxPhase = total + 1;
-  tutStep = Math.max(0, Math.min(maxPhase, tutStep + delta));
-  renderTutorialStep();
-  document.getElementById('tut-body').scrollTop = 0;
-}
-
-function renderTutorialStep() {
-  if (!tutStitch) return;
-  const s = tutStitch;
-  const total = s.steps.length;
-  const phase = tutStep; // 0=intro, 1..total=steps, total+1=done
-
-  // Progress dots (steps only)
-  const dotsEl = document.getElementById('tut-progress-dots');
-  dotsEl.innerHTML = s.steps.map((_,i) => {
-    const dotPhase = i + 1;
-    const cls = dotPhase < phase ? 'done' : dotPhase === phase ? 'active' : '';
-    return `<div class="tut-prog-dot ${cls}"></div>`;
-  }).join('');
-
-  // Step counter
-  const ctEl = document.getElementById('tut-step-counter');
-  if (phase === 0) ctEl.textContent = '';
-  else if (phase > total) ctEl.textContent = '✓ Done';
-  else ctEl.textContent = `${phase}/${total}`;
-
-  // Prev/next buttons
-  document.getElementById('tut-prev').style.display = phase === 0 ? 'none' : '';
-  document.getElementById('tut-next').textContent = phase === 0 ? 'Start Tutorial ›' : phase >= total ? 'Finish ✓' : 'Next ›';
-  document.getElementById('tut-next').style.background = phase > total ? 'var(--sage)' : '';
-
-  const body = document.getElementById('tut-body');
-  const catLabel = {basic:'Basic Stitch', textured:'Textured Stitch', special:'Special Technique'}[s.cat] || s.cat;
-  const catColor = {basic:'var(--rose)', textured:'var(--sage)', special:'#8A7AC5'}[s.cat] || 'var(--rose)';
-
-  if (phase === 0) {
-    // Intro screen
-    body.innerHTML = `
-      <div class="tut-stitch-header">
-        <div style="display:flex;align-items:center;gap:12px">
-          <div style="font-size:48px;line-height:1">${s.icon}</div>
-          <div>
-            <div style="font-size:24px;font-weight:700;color:var(--charcoal);letter-spacing:-0.5px">${s.name}</div>
-            <div style="font-size:15px;font-weight:700;color:var(--rose-dark);margin-top:2px">${s.abbr}</div>
-          </div>
-        </div>
-        <div class="tut-stitch-meta">
-          <span style="background:${catColor};color:#fff;font-size:11px;font-weight:600;padding:4px 10px;border-radius:50px">${catLabel}</span>
-          ${diffDots(s.diff)}
-          <span style="font-size:12px;color:var(--muted)">${s.steps.length} steps</span>
-        </div>
-      </div>
-      <div style="padding:20px 18px">
-        <p style="font-size:16px;color:var(--charcoal-soft);line-height:1.7;margin-bottom:20px">${s.desc}</p>
-        <div class="tut-diagram">${getDiagram('default')}</div>
-      </div>
-      <div class="tut-section-label">Best used for</div>
-      <div class="tut-uses-scroll">${s.uses.map(u=>`<div class="tut-use-chip">${u}</div>`).join('')}</div>
-      <div class="tut-section-label">All steps</div>
-      ${s.steps.map((st,i) => `
-        <div class="tut-step-card" onclick="tutStep=${i+1};renderTutorialStep();document.getElementById('tut-body').scrollTop=0">
-          <div class="tut-step-card-head">
-            <div class="tut-step-card-num">${i+1}</div>
-            <div class="tut-step-card-title">${st.t}</div>
-          </div>
-        </div>`).join('')}
-      <div style="height:20px"></div>
-    `;
-  } else if (phase > total) {
-    // Completion screen
-    body.innerHTML = `
-      <div style="padding:40px 24px;text-align:center">
-        <div style="font-size:64px;margin-bottom:16px">🎉</div>
-        <div style="font-size:24px;font-weight:700;color:var(--charcoal);margin-bottom:8px">You did it!</div>
-        <div style="font-size:16px;color:var(--muted);margin-bottom:28px;line-height:1.6">You've completed the <strong>${s.name}</strong> tutorial. Now try it with your hook!</div>
-        <div style="background:var(--sage-light);border-radius:var(--radius);padding:16px;margin-bottom:20px;text-align:left">
-          <div style="font-size:12px;font-weight:700;letter-spacing:0.5px;text-transform:uppercase;color:var(--sage-dark);margin-bottom:8px">Quick reminder</div>
-          ${s.steps.map((st,i)=>`<div style="font-size:13px;color:var(--charcoal-soft);padding:4px 0;display:flex;gap:8px"><span style="color:var(--sage);font-weight:700;flex-shrink:0">${i+1}.</span> ${st.t}</div>`).join('')}
-        </div>
-        <button class="btn btn-fill btn-full" onclick="tutStep=1;renderTutorialStep()">Practise again</button>
-        <button class="btn btn-full" style="margin-top:8px" onclick="closeTutorial()">Back to stitches</button>
-        <div style="height:20px"></div>
-      </div>
-    `;
-  } else {
-    // Step screen
-    const step = s.steps[phase - 1];
-    body.innerHTML = `
-      <div class="tut-step-wrap">
-        <div class="tut-step-num-badge">
-          <div class="tut-step-num-circle">${phase}</div>
-          <span class="tut-step-total">Step ${phase} of ${total}</span>
-        </div>
-        <div class="tut-step-title">${step.t}</div>
-        <div class="tut-diagram">${getDiagram(step.t)}</div>
-        <div class="tut-step-desc">${step.d}</div>
-        ${step.tip ? `
-          <div class="tut-tip-box">
-            <div class="tut-tip-label">💡 Tip</div>
-            ${step.tip}
-          </div>` : ''}
-      </div>
-      <div class="tut-section-label">All steps</div>
-      ${s.steps.map((st,i) => `
-        <div class="tut-step-card ${i+1 === phase ? 'active-card' : ''}" onclick="tutStep=${i+1};renderTutorialStep();document.getElementById('tut-body').scrollTop=0">
-          <div class="tut-step-card-head">
-            <div class="tut-step-card-num" style="background:${i+1<phase?'var(--sage)':i+1===phase?'var(--rose)':'var(--border-med)'}; color:${i+1<=phase?'#fff':'var(--muted)'}">${i+1<phase?'✓':i+1}</div>
-            <div class="tut-step-card-title">${st.t}</div>
-          </div>
-          ${i+1 === phase ? `<div class="tut-step-card-body">${st.d}</div>${st.tip?`<div class="tut-step-card-tip">💡 ${st.tip}</div>`:''}` : ''}
-        </div>`).join('')}
-      <div style="height:20px"></div>
-    `;
-  }
-}
-
-// close tutorial on back swipe (touch)
-(function(){
-  let tx0 = 0;
-  const ov = document.getElementById('tutorial-overlay');
-  ov.addEventListener('touchstart', e => { tx0 = e.touches[0].clientX; }, {passive:true});
-  ov.addEventListener('touchend', e => {
-    const dx = e.changedTouches[0].clientX - tx0;
-    if (dx > 80) closeTutorial();
-  }, {passive:true});
-})();
 
 // ═══════════════════════════════════════════════════
 // SYNC — CraftBase bridge
