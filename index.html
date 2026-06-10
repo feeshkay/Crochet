@@ -311,7 +311,22 @@
 
     <!-- ═══ PATTERNS ═══ -->
     <div class="screen" id="screen-patterns">
+      <div style="position:sticky;top:0;background:var(--bg);padding-bottom:10px;z-index:10">
+        <input type="search" id="pat-search" placeholder="Search patterns…" oninput="filterPatterns(this.value)" style="margin-bottom:8px">
+        <div style="display:flex;gap:6px;overflow-x:auto;padding-bottom:2px;scrollbar-width:none">
+          <button class="tag" id="pf-all" onclick="setPatFilter('all',this)" style="cursor:pointer;flex-shrink:0;background:var(--rose);color:#fff;border-color:var(--rose)">All</button>
+          <button class="tag" id="pf-Beginner" onclick="setPatFilter('Beginner',this)" style="cursor:pointer;flex-shrink:0">Beginner</button>
+          <button class="tag" id="pf-Easy" onclick="setPatFilter('Easy',this)" style="cursor:pointer;flex-shrink:0">Easy</button>
+          <button class="tag" id="pf-Intermediate" onclick="setPatFilter('Intermediate',this)" style="cursor:pointer;flex-shrink:0">Intermediate</button>
+          <button class="tag" id="pf-Advanced" onclick="setPatFilter('Advanced',this)" style="cursor:pointer;flex-shrink:0">Advanced</button>
+        </div>
+      </div>
       <div id="pattern-list"></div>
+    </div>
+
+    <!-- ═══ PATTERN DETAIL (sub-screen) ═══ -->
+    <div class="screen" id="screen-pattern-detail">
+      <div id="pattern-detail-content"></div>
     </div>
 
     <!-- ═══ TOOLS ═══ -->
@@ -512,19 +527,57 @@
 
 <!-- Add Pattern -->
 <div class="modal-backdrop" id="modal-add-pattern">
-  <div class="modal-sheet">
+  <div class="modal-sheet" style="max-height:92vh">
     <div class="modal-handle"></div>
-    <div class="modal-title">Save Pattern</div>
+    <div class="modal-title" id="pat-modal-title">New Pattern</div>
+    <input type="hidden" id="pat-edit-id">
     <div style="margin-top:16px">
-      <div class="form-group"><label>Pattern name</label><input type="text" id="pat-name" placeholder="e.g. Granny Square Blanket"></div>
-      <div class="form-group"><label>Source / Designer</label><input type="text" id="pat-source" placeholder="Ravelry, blog, book…"></div>
-      <div class="form-group"><label>Difficulty</label>
-        <select id="pat-diff"><option value="1">Beginner</option><option value="2">Easy</option><option value="3">Intermediate</option><option value="4">Advanced</option><option value="5">Expert</option></select>
+      <div class="form-group"><label>Pattern name *</label><input type="text" id="pat-name" placeholder="e.g. Granny Square Blanket"></div>
+      <div class="form-group"><label>Designer / Source</label><input type="text" id="pat-source" placeholder="e.g. Tin Can Knits, Ravelry…"></div>
+      <div class="form-group"><label>Reference URL</label><input type="url" id="pat-url" placeholder="https://…"></div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+        <div class="form-group" style="margin-bottom:0">
+          <label>Difficulty</label>
+          <select id="pat-diff">
+            <option value="1">Beginner</option>
+            <option value="2">Easy</option>
+            <option value="3">Intermediate</option>
+            <option value="4">Advanced</option>
+            <option value="5">Expert</option>
+          </select>
+        </div>
+        <div class="form-group" style="margin-bottom:0">
+          <label>Hook size</label>
+          <input type="text" id="pat-hook" placeholder="e.g. 5.0mm">
+        </div>
       </div>
-      <div class="form-group"><label>Tags (comma-separated)</label><input type="text" id="pat-tags" placeholder="cosy, winter, gift"></div>
-      <div class="form-group"><label>Notes / Instructions</label><textarea id="pat-notes" placeholder="Paste key notes, modifications…" style="min-height:120px"></textarea></div>
-      <div class="form-group"><label>URL (optional)</label><input type="url" id="pat-url" placeholder="https://…"></div>
+      <div class="form-group" style="margin-top:14px"><label>Yarn weight</label>
+        <select id="pat-yarn-weight">
+          <option value="">— any —</option>
+          <option>Lace (0)</option><option>Fingering (1)</option><option>Sport (2)</option>
+          <option>DK (3)</option><option>Worsted (4)</option><option>Bulky (5)</option>
+          <option>Super Bulky (6)</option><option>Jumbo (7)</option>
+        </select>
+      </div>
+      <div class="form-group"><label>Tags (comma-separated)</label><input type="text" id="pat-tags" placeholder="cosy, winter, gift, amigurumi…"></div>
+
+      <!-- Instructions / notes with file upload -->
+      <div class="form-group">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:5px">
+          <label style="margin-bottom:0">Instructions & Notes</label>
+          <label class="btn btn-sm btn-sage" style="cursor:pointer;padding:5px 10px;font-size:12px">
+            📎 Upload file
+            <input type="file" id="pat-file-input" accept=".txt,.pdf,.md,.rtf" onchange="handlePatternFile(this)" style="display:none">
+          </label>
+        </div>
+        <div id="pat-file-status" style="font-size:12px;color:var(--sage-dark);margin-bottom:6px;display:none"></div>
+        <textarea id="pat-notes" placeholder="Paste pattern instructions here, or upload a .txt / .pdf file above…" style="min-height:160px;font-size:13px;line-height:1.7;font-family:monospace"></textarea>
+      </div>
+
+      <div class="form-group"><label>Personal notes / modifications</label><textarea id="pat-mods" placeholder="What you changed, yarn substitutions, sizing notes…" style="min-height:80px"></textarea></div>
+
       <button class="btn btn-fill btn-full" onclick="savePattern()">Save Pattern</button>
+      <button class="btn btn-full" style="margin-top:8px" onclick="closeModal('modal-add-pattern')">Cancel</button>
     </div>
   </div>
 </div>
@@ -905,7 +958,7 @@ function updateTopBar() {
   const actions = {
     projects: { text:'+ Project', fn:'openModal("modal-add-project")' },
     yarn: { text:'+ Yarn', fn:'openModal("modal-add-yarn")' },
-    patterns: { text:'+ Pattern', fn:'openModal("modal-add-pattern")' },
+    patterns: { text:'+ Pattern', fn:'openNewPatternModal()' },
   };
   if (actions[currentScreen]) {
     btn.textContent = actions[currentScreen].text;
@@ -1278,53 +1331,218 @@ function deleteYarn(id) {
 // ═══════════════════════════════════════════════════
 // PATTERNS
 // ═══════════════════════════════════════════════════
-function renderPatterns() {
-  const patterns = LS.get('patterns');
-  const el = document.getElementById('pattern-list');
-  if (!patterns.length) {
-    el.innerHTML = `<div class="empty-state"><div class="empty-icon">📋</div><div class="empty-msg">Save patterns to your library</div></div>`;
-    return;
-  }
-  el.innerHTML = patterns.map(p => `
-    <div class="card" style="cursor:pointer">
-      <div class="row-between" style="margin-bottom:6px">
-        <div style="font-size:15px;font-weight:600">${p.name}</div>
-        ${diffDotsStatic(parseInt(p.diff))}
-      </div>
-      <div style="font-size:13px;color:var(--muted);margin-bottom:8px">${p.source || 'No source'}</div>
-      ${p.tags ? `<div class="tags-row">${p.tags.split(',').map(t=>`<span class="tag">${t.trim()}</span>`).join('')}</div>` : ''}
-      ${p.notes ? `<div style="font-size:13px;color:var(--charcoal-soft);margin-top:10px;line-height:1.6;white-space:pre-wrap">${p.notes}</div>` : ''}
-      ${p.url ? `<a href="${p.url}" target="_blank" style="font-size:13px;color:var(--rose-dark);display:block;margin-top:8px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${p.url}</a>` : ''}
-      <div style="margin-top:10px;text-align:right"><button class="btn btn-sm" style="color:var(--rose);border-color:var(--rose)" onclick="deletePattern('${p.id}')">Delete</button></div>
-    </div>`).join('');
-}
+// ── Pattern filter state ──
+let patFilterDiff = 'all';
+let patSearchVal = '';
 
 function diffDotsStatic(n) {
   const labels = ['','Beginner','Easy','Intermediate','Advanced','Expert'];
-  return `<span class="badge badge-rose" style="font-size:11px">${labels[n]||''}</span>`;
+  const colors = ['','badge-muted','badge-sage','badge-rose','badge-rose','badge-rose'];
+  return `<span class="badge ${colors[n]||'badge-muted'}" style="font-size:11px">${labels[n]||''}</span>`;
+}
+
+function setPatFilter(val, el) {
+  patFilterDiff = val;
+  document.querySelectorAll('[id^="pf-"]').forEach(b => {
+    b.style.background = ''; b.style.color = ''; b.style.borderColor = '';
+  });
+  if (el) { el.style.background = 'var(--rose)'; el.style.color = '#fff'; el.style.borderColor = 'var(--rose)'; }
+  renderPatterns();
+}
+
+function filterPatterns(val) {
+  patSearchVal = val.toLowerCase();
+  renderPatterns();
+}
+
+function renderPatterns() {
+  let patterns = LS.get('patterns');
+  const diffLabels = ['','Beginner','Easy','Intermediate','Advanced','Expert'];
+  if (patFilterDiff !== 'all') patterns = patterns.filter(p => diffLabels[parseInt(p.diff)] === patFilterDiff);
+  if (patSearchVal) patterns = patterns.filter(p =>
+    p.name.toLowerCase().includes(patSearchVal) ||
+    (p.source||'').toLowerCase().includes(patSearchVal) ||
+    (p.tags||'').toLowerCase().includes(patSearchVal) ||
+    (p.notes||'').toLowerCase().includes(patSearchVal)
+  );
+  const el = document.getElementById('pattern-list');
+  if (!patterns.length) {
+    el.innerHTML = `<div class="empty-state"><div class="empty-icon">📋</div><div class="empty-msg">${LS.get('patterns').length ? 'No patterns match' : 'No patterns saved yet'}</div>${!LS.get('patterns').length ? `<div style="margin-top:12px"><button class="btn btn-fill btn-sm" onclick="openNewPatternModal()">Add your first pattern</button></div>` : ''}</div>`;
+    return;
+  }
+  el.innerHTML = patterns.map(p => `
+    <div class="card" onclick="openPatternDetail('${p.id}')" style="cursor:pointer">
+      <div class="row-between" style="margin-bottom:6px">
+        <div style="font-size:15px;font-weight:600;flex:1;margin-right:8px">${p.name}</div>
+        ${diffDotsStatic(parseInt(p.diff))}
+      </div>
+      ${p.source ? `<div style="font-size:13px;color:var(--muted);margin-bottom:6px">✍️ ${p.source}</div>` : ''}
+      <div style="display:flex;gap:10px;flex-wrap:wrap;font-size:12px;color:var(--muted);margin-bottom:6px">
+        ${p.hook ? `<span>🪝 ${p.hook}</span>` : ''}
+        ${p.yarnWeight ? `<span>🧶 ${p.yarnWeight}</span>` : ''}
+        ${p.notes ? `<span>📝 ${p.notes.length > 60 ? p.notes.slice(0,60)+'…' : p.notes.split('\n')[0]}</span>` : ''}
+      </div>
+      ${p.tags ? `<div class="tags-row">${p.tags.split(',').map(t=>`<span class="tag">${t.trim()}</span>`).join('')}</div>` : ''}
+    </div>`).join('');
+}
+
+function openPatternDetail(id) {
+  const patterns = LS.get('patterns');
+  const p = patterns.find(x => x.id === id);
+  if (!p) return;
+  const diffLabels = ['','Beginner','Easy','Intermediate','Advanced','Expert'];
+  document.getElementById('pattern-detail-content').innerHTML = `
+    <div class="row-between" style="margin-bottom:16px">
+      <button class="btn btn-sm" onclick="goTo('patterns')">‹ Back</button>
+      <div style="display:flex;gap:8px">
+        <button class="btn btn-sm btn-sage" onclick="editPattern('${p.id}')">Edit</button>
+        <button class="btn btn-sm" style="color:var(--rose);border-color:var(--rose)" onclick="deletePattern('${p.id}')">Delete</button>
+      </div>
+    </div>
+    <div class="card" style="margin-bottom:12px">
+      <h2 style="margin-bottom:8px">${p.name}</h2>
+      <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-bottom:10px">
+        ${diffDotsStatic(parseInt(p.diff))}
+        ${p.hook ? `<span class="badge badge-muted">🪝 ${p.hook}</span>` : ''}
+        ${p.yarnWeight ? `<span class="badge badge-muted">🧶 ${p.yarnWeight}</span>` : ''}
+      </div>
+      ${p.source ? `<div style="font-size:13px;color:var(--charcoal-soft);margin-bottom:6px"><strong>Source:</strong> ${p.source}</div>` : ''}
+      ${p.url ? `<a href="${p.url}" target="_blank" class="btn btn-sm btn-sage" style="display:inline-flex;margin-top:4px">🔗 Open original source</a>` : ''}
+      ${p.tags ? `<div class="tags-row" style="margin-top:10px">${p.tags.split(',').map(t=>`<span class="tag">${t.trim()}</span>`).join('')}</div>` : ''}
+    </div>
+    ${p.notes ? `
+    <div class="section-label" style="display:flex;align-items:center;justify-content:space-between">
+      <span>Instructions</span>
+      <button class="btn btn-sm btn-sage" onclick="copyPatternText('${p.id}')">📋 Copy all</button>
+    </div>
+    <div class="card" style="padding:14px">
+      <pre style="font-size:13px;line-height:1.8;color:var(--charcoal-soft);white-space:pre-wrap;word-break:break-word;font-family:monospace;margin:0">${escHtml(p.notes)}</pre>
+    </div>` : ''}
+    ${p.mods ? `
+    <div class="section-label">My Notes & Modifications</div>
+    <div class="card" style="background:var(--sage-light);border-color:var(--sage);padding:14px">
+      <pre style="font-size:13px;line-height:1.8;color:var(--sage-dark);white-space:pre-wrap;word-break:break-word;font-family:inherit;margin:0">${escHtml(p.mods)}</pre>
+    </div>` : ''}
+    <div style="height:16px"></div>
+  `;
+  goTo('pattern-detail');
+}
+
+function escHtml(s) {
+  return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+
+function copyPatternText(id) {
+  const p = LS.get('patterns').find(x => x.id === id);
+  if (!p || !p.notes) return;
+  navigator.clipboard.writeText(p.notes).then(() => {
+    const btn = document.querySelector('[onclick*="copyPatternText"]');
+    if (btn) { btn.textContent = '✅ Copied!'; setTimeout(() => btn.textContent = '📋 Copy all', 2000); }
+  });
+}
+
+function editPattern(id) {
+  const p = LS.get('patterns').find(x => x.id === id);
+  if (!p) return;
+  document.getElementById('pat-modal-title').textContent = 'Edit Pattern';
+  document.getElementById('pat-edit-id').value = p.id;
+  document.getElementById('pat-name').value = p.name || '';
+  document.getElementById('pat-source').value = p.source || '';
+  document.getElementById('pat-url').value = p.url || '';
+  document.getElementById('pat-diff').value = p.diff || '1';
+  document.getElementById('pat-hook').value = p.hook || '';
+  document.getElementById('pat-yarn-weight').value = p.yarnWeight || '';
+  document.getElementById('pat-tags').value = p.tags || '';
+  document.getElementById('pat-notes').value = p.notes || '';
+  document.getElementById('pat-mods').value = p.mods || '';
+  openModal('modal-add-pattern');
+}
+
+function openNewPatternModal() {
+  document.getElementById('pat-modal-title').textContent = 'New Pattern';
+  document.getElementById('pat-edit-id').value = '';
+  ['pat-name','pat-source','pat-url','pat-hook','pat-tags','pat-notes','pat-mods'].forEach(id => document.getElementById(id).value = '');
+  document.getElementById('pat-diff').value = '1';
+  document.getElementById('pat-yarn-weight').value = '';
+  const fs = document.getElementById('pat-file-status');
+  fs.style.display = 'none'; fs.textContent = '';
+  openModal('modal-add-pattern');
+}
+
+function handlePatternFile(input) {
+  const file = input.files[0];
+  if (!file) return;
+  const status = document.getElementById('pat-file-status');
+  status.style.display = 'block';
+  status.textContent = '⏳ Reading file…';
+  const reader = new FileReader();
+  reader.onload = e => {
+    let text = '';
+    if (file.type === 'application/pdf' || file.name.endsWith('.pdf')) {
+      // PDF: extract raw text via simple byte scan (no lib needed for text PDFs)
+      try {
+        const raw = e.target.result;
+        const matches = raw.match(/\(([^)]{2,})\)/g) || [];
+        text = matches.map(m => m.slice(1,-1)).join(' ').replace(/\\n/g,'\n').trim();
+        if (text.length < 50) text = '[PDF content could not be extracted automatically. Please paste the text manually.]';
+      } catch(err) {
+        text = '[Could not read PDF. Please paste the text manually.]';
+      }
+    } else {
+      text = e.target.result;
+    }
+    const ta = document.getElementById('pat-notes');
+    ta.value = (ta.value ? ta.value + '\n\n--- From file: ' + file.name + ' ---\n' : '') + text;
+    status.textContent = '✅ ' + file.name + ' loaded (' + Math.round(text.length/1000) + 'k chars)';
+    if (!document.getElementById('pat-name').value) {
+      document.getElementById('pat-name').value = file.name.replace(/\.[^.]+$/, '').replace(/[-_]/g,' ');
+    }
+  };
+  reader.onerror = () => { status.textContent = '✗ Could not read file.'; };
+  if (file.type === 'application/pdf' || file.name.endsWith('.pdf')) {
+    reader.readAsBinaryString(file);
+  } else {
+    reader.readAsText(file);
+  }
+  input.value = '';
 }
 
 function savePattern() {
   const name = document.getElementById('pat-name').value.trim();
-  if (!name) return alert('Please enter a pattern name.');
+  if (!name) { alert('Please enter a pattern name.'); return; }
   const patterns = LS.get('patterns');
-  patterns.push({
-    id: 'pat_'+Date.now(), name,
+  const editId = document.getElementById('pat-edit-id').value;
+  const data = {
+    name,
     source: document.getElementById('pat-source').value.trim(),
+    url: document.getElementById('pat-url').value.trim(),
     diff: document.getElementById('pat-diff').value,
+    hook: document.getElementById('pat-hook').value.trim(),
+    yarnWeight: document.getElementById('pat-yarn-weight').value,
     tags: document.getElementById('pat-tags').value.trim(),
     notes: document.getElementById('pat-notes').value.trim(),
-    url: document.getElementById('pat-url').value.trim(),
-  });
+    mods: document.getElementById('pat-mods').value.trim(),
+  };
+  if (editId) {
+    const idx = patterns.findIndex(p => p.id === editId);
+    if (idx >= 0) patterns[idx] = { ...patterns[idx], ...data };
+  } else {
+    patterns.push({ id: 'pat_'+Date.now(), ...data });
+  }
   LS.set('patterns', patterns);
-  ['pat-name','pat-source','pat-tags','pat-notes','pat-url'].forEach(id => document.getElementById(id).value='');
   closeModal('modal-add-pattern');
-  renderPatterns();
+  if (editId) {
+    openPatternDetail(editId);
+  } else {
+    goTo('patterns');
+    renderPatterns();
+  }
 }
 
 function deletePattern(id) {
   if (!confirm('Delete this pattern?')) return;
   LS.set('patterns', LS.get('patterns').filter(p => p.id !== id));
+  goTo('patterns');
   renderPatterns();
 }
 
