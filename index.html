@@ -149,8 +149,8 @@
   .diff-dot { width: 10px; height: 10px; border-radius: 50%; background: var(--border-med); }
   .diff-dot.on { background: var(--rose); }
   /* ── TUTORIAL OVERLAY ── */
-  .tutorial-overlay { position: fixed; inset: 0; z-index: 200; background: var(--bg); display: flex; flex-direction: column; transform: translateX(100%); transition: transform .28s cubic-bezier(.4,0,.2,1); }
-  .tutorial-overlay.open { transform: translateX(0); }
+  .tutorial-overlay { position: fixed; inset: 0; z-index: 200; background: var(--bg); display: flex; flex-direction: column; transform: translateX(100%); transition: transform .28s cubic-bezier(.4,0,.2,1); pointer-events: none; }
+  .tutorial-overlay.open { transform: translateX(0); pointer-events: all; }
   .tut-header { padding: calc(var(--safe-top) + 14px) 16px 14px; border-bottom: 0.5px solid var(--border); display: flex; align-items: center; gap: 10px; background: var(--bg); }
   .tut-close { width: 36px; height: 36px; border-radius: 50%; border: 1px solid var(--border-med); background: none; display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 18px; color: var(--muted); flex-shrink: 0; }
   .tut-progress-wrap { flex: 1; display: flex; align-items: center; gap: 6px; }
