@@ -1403,6 +1403,11 @@ function openStitchModal(id) {
   if (!s) return;
   const catLabel = {basic:'Basic Stitch', textured:'Textured Stitch', special:'Special Technique'}[s.cat] || s.cat;
   const catColor = {basic:'rose', textured:'sage', special:'rose'}[s.cat] || 'rose';
+  // Inline stitch diagram (standard crochet chart symbol)
+  const diag = (typeof STITCH_DIAGRAMS !== 'undefined' && STITCH_DIAGRAMS[id])
+    ? `<div style="background:var(--cream-dark);border-radius:10px;padding:16px;display:flex;align-items:center;justify-content:center;margin-bottom:14px;min-height:80px">
+        <div style="text-align:center">${STITCH_DIAGRAMS[id]}<div style="font-size:11px;color:var(--muted);margin-top:8px">Crochet chart symbol</div></div>
+       </div>` : '';
   document.getElementById('stitch-modal-inner').innerHTML = `
     <div style="display:flex;align-items:flex-start;gap:12px;margin-bottom:10px">
       <div style="font-size:40px;line-height:1">${s.icon}</div>
@@ -1416,6 +1421,7 @@ function openStitchModal(id) {
       </div>
     </div>
     <p style="font-size:13px;color:var(--charcoal-soft);line-height:1.65;margin-bottom:14px">${s.desc}</p>
+    ${diag}
     <div class="section-label" style="margin-top:0">Best used for</div>
     <div class="tags-row" style="margin-bottom:14px">${s.uses.map(u=>`<span class="tag">${u}</span>`).join('')}</div>
     <div class="section-label">Step-by-step</div>
@@ -2003,7 +2009,10 @@ function renderSessionsScreen() {
     document.getElementById('sess-active-card').style.display = 'block';
   }
   renderSpeedRefTable();
-  showSessTab(document.querySelector('#sess-tabs .tab-btn.active')?.dataset.tab || 'log');
+  // On first open, active tab-btn may not have dataset.tab yet — default to 'log'
+  const activeTabEl = document.querySelector('#sess-tabs .tab-btn.active');
+  const activeTab = (activeTabEl && activeTabEl.dataset.tab) ? activeTabEl.dataset.tab : 'log';
+  showSessTab(activeTab);
 }
 
 function showSessTab(tab, el) {
@@ -2303,26 +2312,7 @@ const STITCH_DIAGRAMS = {
   'picot': `<svg viewBox="0 0 60 70" xmlns="http://www.w3.org/2000/svg"><ellipse cx="30" cy="20" rx="14" ry="14" fill="none" stroke="#A5607A" stroke-width="2.5"/><line x1="30" y1="34" x2="30" y2="65" stroke="#A5607A" stroke-width="2.5"/></svg>`,
 };
 
-// Add diagram to stitch modal
-const _origOpenStitchModal = openStitchModal;
-function openStitchModal(id) {
-  _origOpenStitchModal(id);
-  // inject diagram after modal opens
-  const s = STITCHES.find(st => st.id === id);
-  if (!s) return;
-  const diag = STITCH_DIAGRAMS[id];
-  if (!diag) return;
-  const inner = document.getElementById('stitch-modal-inner');
-  if (!inner) return;
-  // Insert diagram block after the description paragraph
-  const diagDiv = document.createElement('div');
-  diagDiv.style.cssText = 'background:var(--cream-dark);border-radius:10px;padding:16px;display:flex;align-items:center;justify-content:center;margin-bottom:14px;min-height:80px';
-  diagDiv.innerHTML = `<div style="text-align:center">${diag}<div style="font-size:11px;color:var(--muted);margin-top:8px">Crochet chart symbol</div></div>`;
-  // Find the desc paragraph and insert after it
-  const paras = inner.querySelectorAll('p');
-  if (paras.length) paras[paras.length-1].after(diagDiv);
-  else inner.prepend(diagDiv);
-}
+// Stitch diagrams are now rendered inline inside openStitchModal above.
 
 // ═══════════════════════════════════════════════════
 // PROGRESS PHOTOS — per project, stored in IDB
