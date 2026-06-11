@@ -426,6 +426,148 @@
       </div>
     </div>
 
+    <!-- ═══ SESSIONS & STATS ═══ -->
+    <div class="screen" id="screen-sessions">
+      <div class="tab-bar" id="sess-tabs">
+        <button class="tab-btn active" id="sess-tab-log"   onclick="showSessTab('log',this)">Log Session</button>
+        <button class="tab-btn"        id="sess-tab-hist"  onclick="showSessTab('hist',this)">History</button>
+        <button class="tab-btn"        id="sess-tab-stats" onclick="showSessTab('stats',this)">Stats</button>
+        <button class="tab-btn"        id="sess-tab-est"   onclick="showSessTab('est',this)">Estimator</button>
+      </div>
+
+      <!-- LOG TAB -->
+      <div id="sess-panel-log">
+        <div class="card">
+          <div style="font-size:15px;font-weight:600;margin-bottom:14px">Start a Crochet Session</div>
+          <div class="form-group">
+            <label>Project (optional)</label>
+            <select id="sess-project"><option value="">— no project —</option></select>
+          </div>
+          <div class="form-group">
+            <label>Stitch type</label>
+            <select id="sess-stitch">
+              <option value="sc">Single Crochet (sc)</option>
+              <option value="hdc">Half Double Crochet (hdc)</option>
+              <option value="dc" selected>Double Crochet (dc)</option>
+              <option value="tr">Treble Crochet (tr)</option>
+              <option value="sl-st">Slip Stitch (sl st)</option>
+              <option value="bobble">Bobble</option>
+              <option value="puff">Puff Stitch</option>
+              <option value="granny">Granny Square</option>
+              <option value="other">Other / Mixed</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Yarn weight</label>
+            <select id="sess-weight">
+              <option value="lace">Lace / Thread (0)</option>
+              <option value="fingering">Fingering (1)</option>
+              <option value="sport">Sport (2)</option>
+              <option value="dk">DK (3)</option>
+              <option value="worsted" selected>Worsted (4)</option>
+              <option value="bulky">Bulky (5)</option>
+              <option value="super-bulky">Super Bulky (6)</option>
+              <option value="jumbo">Jumbo (7)</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Hook size</label>
+            <select id="sess-hook">
+              <option>2.0mm</option><option>2.5mm</option><option>3.0mm</option><option>3.5mm</option>
+              <option>4.0mm</option><option>4.5mm</option><option value="5.0mm" selected>5.0mm</option>
+              <option>5.5mm</option><option>6.0mm</option><option>6.5mm</option><option>7.0mm</option>
+              <option>8.0mm</option><option>9.0mm</option><option>10.0mm</option><option>12.0mm</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Active session card -->
+        <div class="card" id="sess-active-card" style="text-align:center;display:none">
+          <div style="font-size:11px;font-weight:700;letter-spacing:.6px;text-transform:uppercase;color:var(--rose);margin-bottom:8px">🔴 Session Live</div>
+          <div class="timer-display" id="sess-timer">00:00:00</div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:16px 0">
+            <div>
+              <div style="font-size:28px;font-weight:700;color:var(--charcoal)" id="sess-stitch-count">0</div>
+              <div style="font-size:11px;color:var(--muted)">stitches</div>
+            </div>
+            <div>
+              <div style="font-size:28px;font-weight:700;color:var(--rose)" id="sess-spm">—</div>
+              <div style="font-size:11px;color:var(--muted)">sts/min</div>
+            </div>
+          </div>
+          <div style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-bottom:12px">
+            <button class="counter-big-btn btn-minus" style="width:54px;height:54px;font-size:24px" onclick="sessAdjust(-1)">−</button>
+            <button class="counter-big-btn btn-plus"  style="width:54px;height:54px;font-size:24px" onclick="sessAdjust(1)">+</button>
+          </div>
+          <div style="font-size:12px;color:var(--muted);margin-bottom:14px" id="sess-live-est"></div>
+          <button class="btn btn-fill btn-full" style="background:var(--rose-dark);border-color:var(--rose-dark)" onclick="endSession()">End Session &amp; Save</button>
+        </div>
+
+        <div id="sess-start-wrap">
+          <button class="btn btn-fill btn-full" style="margin-top:4px" onclick="startSession()">▶ Start Session</button>
+        </div>
+        <div id="sess-save-result" style="margin-top:12px"></div>
+      </div>
+
+      <!-- HISTORY TAB -->
+      <div id="sess-panel-hist" style="display:none">
+        <div id="sess-history-list"></div>
+      </div>
+
+      <!-- STATS TAB -->
+      <div id="sess-panel-stats" style="display:none">
+        <div id="sess-stats-content"></div>
+      </div>
+
+      <!-- ESTIMATOR TAB -->
+      <div id="sess-panel-est" style="display:none">
+        <div class="card">
+          <div style="font-size:15px;font-weight:600;margin-bottom:14px">⏱ Project Time Estimator</div>
+          <div class="form-group">
+            <label>Stitch type</label>
+            <select id="est-stitch">
+              <option value="sc">Single Crochet (sc)</option>
+              <option value="hdc">Half Double Crochet (hdc)</option>
+              <option value="dc" selected>Double Crochet (dc)</option>
+              <option value="tr">Treble Crochet (tr)</option>
+              <option value="sl-st">Slip Stitch</option>
+              <option value="bobble">Bobble</option>
+              <option value="puff">Puff Stitch</option>
+              <option value="granny">Granny Square</option>
+              <option value="other">Other / Mixed</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Yarn weight</label>
+            <select id="est-weight">
+              <option value="lace">Lace / Thread (0)</option>
+              <option value="fingering">Fingering (1)</option>
+              <option value="sport">Sport (2)</option>
+              <option value="dk">DK (3)</option>
+              <option value="worsted" selected>Worsted (4)</option>
+              <option value="bulky">Bulky (5)</option>
+              <option value="super-bulky">Super Bulky (6)</option>
+              <option value="jumbo">Jumbo (7)</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Total stitches in project</label>
+            <input type="number" id="est-stitches" placeholder="e.g. 2400" min="1">
+          </div>
+          <div class="form-group">
+            <label>Break time per hour (minutes)</label>
+            <input type="number" id="est-breaks" value="10" min="0" max="59">
+          </div>
+          <button class="btn btn-fill btn-full" onclick="calcEstimate()">Calculate</button>
+          <div id="est-result" style="margin-top:16px"></div>
+        </div>
+
+        <!-- Reference speeds card -->
+        <div class="section-label">Reference Speeds by Weight</div>
+        <div class="card" id="speed-ref-table"></div>
+      </div>
+    </div>
+
   </div><!-- /screens -->
 
   <!-- BOTTOM NAV -->
@@ -453,6 +595,10 @@
     <button class="nav-btn" id="nav-yarn" onclick="goTo('yarn')">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="8"/><path d="M4.93 7.07a8 8 0 0114.14 0M4.93 16.93a8 8 0 0114.14 0M3 12h18"/></svg>
       <span>Stash</span>
+    </button>
+    <button class="nav-btn" id="nav-sessions" onclick="goTo('sessions')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M12 2a10 10 0 100 20A10 10 0 0012 2z"/><path d="M12 6v6l4 2"/></svg>
+      <span>Sessions</span>
     </button>
     <button class="nav-btn" id="nav-tools" onclick="goTo('tools')">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M14.7 6.3a1 1 0 000 1.4l1.6 1.6a1 1 0 001.4 0l3.77-3.77a6 6 0 01-7.94 7.94l-6.91 6.91a2.12 2.12 0 01-3-3l6.91-6.91a6 6 0 017.94-7.94l-3.76 3.76z"/></svg>
@@ -522,7 +668,12 @@
         <select id="pat-diff"><option value="1">Beginner</option><option value="2">Easy</option><option value="3">Intermediate</option><option value="4">Advanced</option><option value="5">Expert</option></select>
       </div>
       <div class="form-group"><label>Tags (comma-separated)</label><input type="text" id="pat-tags" placeholder="cosy, winter, gift"></div>
-      <div class="form-group"><label>Notes / Instructions</label><textarea id="pat-notes" placeholder="Paste key notes, modifications…" style="min-height:120px"></textarea></div>
+      <div class="form-group">
+        <label>Instructions</label>
+        <textarea id="pat-notes" placeholder="Paste instructions here — sections like 'Body:' or 'HEAD' are detected automatically" style="min-height:130px" oninput="previewPatternParse()"></textarea>
+      </div>
+      <!-- Live preview -->
+      <div id="pat-preview" style="display:none;margin-bottom:14px"></div>
       <div class="form-group"><label>URL (optional)</label><input type="url" id="pat-url" placeholder="https://…"></div>
       <button class="btn btn-fill btn-full" onclick="savePattern()">Save Pattern</button>
     </div>
@@ -534,6 +685,23 @@
   <div class="modal-sheet" id="modal-stitch-content" style="max-height:90vh">
     <div class="modal-handle"></div>
     <div id="stitch-modal-inner"></div>
+  </div>
+</div>
+
+<!-- Progress Photos Modal -->
+<div class="modal-backdrop" id="modal-photos">
+  <div class="modal-sheet" style="max-height:90vh">
+    <div class="modal-handle"></div>
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px">
+      <div class="modal-title">Progress Photos</div>
+      <label class="btn btn-fill btn-sm" style="cursor:pointer">
+        📷 Add Photo
+        <input type="file" accept="image/*" capture="environment" onchange="saveProgressPhoto(this)" style="display:none">
+      </label>
+    </div>
+    <input type="hidden" id="photo-modal-project-id">
+    <div id="photo-gallery" style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px"></div>
+    <div style="height:12px"></div>
   </div>
 </div>
 
@@ -592,7 +760,7 @@ const LS = {
 };
 
 // Preload all known keys from IDB before first render
-const PRELOAD_KEYS = ['projects','yarns','patterns','counterState'];
+const PRELOAD_KEYS = ['projects','yarns','patterns','counterState','sessions'];
 async function preloadDB() {
   await Promise.all(PRELOAD_KEYS.map(async k => {
     const val = await dbGet(k);
@@ -938,6 +1106,7 @@ function goTo(screen) {
   if (screen === 'stitches') renderStitchGrid();
   if (screen === 'tools') renderHookTable();
   if (screen === 'sync') renderSyncScreen();
+  if (screen === 'sessions') renderSessionsScreen();
   document.getElementById('screens').scrollTop = 0;
 }
 
@@ -1044,6 +1213,7 @@ function openProjectDetail(id) {
     <div class="row-between" style="margin-bottom:16px">
       <button class="btn btn-sm" onclick="goTo('projects')">‹ Back</button>
       <div style="display:flex;gap:8px">
+        <button class="btn btn-sm" style="color:var(--muted);border-color:var(--border)" onclick="openProgressPhotos('${p.id}')">📸</button>
         <button class="btn btn-sm btn-sage btn-fill" onclick="incrementProjectRow('${p.id}')">+Row</button>
         <button class="btn btn-sm" onclick="editProject('${p.id}')">Edit</button>
         <button class="btn btn-sm" style="color:var(--rose);border-color:var(--rose)" onclick="deleteProject('${p.id}')">Delete</button>
@@ -1319,6 +1489,151 @@ function deleteYarn(id) {
 // ═══════════════════════════════════════════════════
 // PATTERNS
 // ═══════════════════════════════════════════════════
+// ─────────────────────────────────────────────────
+// PATTERN PARSER
+// Detects section headers, splits into steps
+// ─────────────────────────────────────────────────
+function parsePatternInstructions(raw) {
+  if (!raw || !raw.trim()) return [];
+  const lines = raw.split(/\r?\n/);
+  const sections = [];
+  let current = null;
+
+  // Header detection regexes
+  const isHeader = line => {
+    const t = line.trim();
+    if (!t) return false;
+    // "Body:", "HEAD:", "Round 1:" etc — word(s) followed by colon at end of trimmed line
+    if (/^[A-Za-z][A-Za-z0-9 \-_]{0,40}:$/.test(t)) return true;
+    // ALL CAPS word(s), 2-30 chars, no digits-only
+    if (/^[A-Z][A-Z0-9 \-_]{1,29}$/.test(t) && !/^\d+$/.test(t)) return true;
+    // Markdown-style ## Header
+    if (/^#{1,3}\s+/.test(t)) return true;
+    // --- Section --- or === Section ===
+    if (/^[-=*]{2,}\s*[A-Za-z].*[-=*]{0,}$/.test(t)) return true;
+    // "SECTION 1." or "Part 1:" or "Step 1:"
+    if (/^(section|part|step|round|rnd|row|piece|panel)\s*\d*[:\-–.]?\s*$/i.test(t)) return true;
+    return false;
+  };
+
+  const cleanHeader = line => line.trim()
+    .replace(/^#+\s*/, '')
+    .replace(/^[-=*]+\s*/, '')
+    .replace(/\s*[-=*]+$/, '')
+    .replace(/:$/, '')
+    .trim();
+
+  const isStep = line => {
+    const t = line.trim();
+    if (!t) return false;
+    // Numbered step: "1." "1)" "R1:" "Row 1:"
+    if (/^(\d+[\.\):]|R\d+:|Row\s*\d+:|Rnd\s*\d+:|Round\s*\d+:)/i.test(t)) return true;
+    // Bullet
+    if (/^[-•*]\s+/.test(t)) return true;
+    // Any non-empty line that's not a header
+    return true;
+  };
+
+  const cleanStep = line => line.trim()
+    .replace(/^[-•*]\s+/, '')
+    .trim();
+
+  for (const line of lines) {
+    const t = line.trim();
+    if (!t) continue;
+
+    if (isHeader(t)) {
+      current = { title: cleanHeader(t), steps: [] };
+      sections.push(current);
+    } else {
+      if (!current) {
+        // No header yet — create a default section
+        current = { title: '', steps: [] };
+        sections.push(current);
+      }
+      if (isStep(t)) {
+        current.steps.push({ text: cleanStep(t), done: false });
+      }
+    }
+  }
+
+  // If everything ended up in one untitled section with no clear sections,
+  // try comma-split for single-line pastes like "body: 1sc, 2sc, ears: 3sc"
+  if (sections.length === 1 && !sections[0].title && sections[0].steps.length === 1) {
+    const singleLine = raw.trim();
+    if (singleLine.includes(',')) {
+      const commaSections = parseCommaSections(singleLine);
+      if (commaSections.length > 0) return commaSections;
+    }
+  }
+
+  return sections.filter(s => s.steps.length > 0);
+}
+
+function parseCommaSections(text) {
+  // Handles: "body: 1sc, 2dc, ears: 3sc, 4dc"
+  const sections = [];
+  // Split on section-like patterns preceded by commas
+  const sectionPattern = /(?:^|,\s*)([A-Za-z][A-Za-z0-9 ]{0,25})\s*:\s*/g;
+  const matches = [];
+  let m;
+  while ((m = sectionPattern.exec(text)) !== null) {
+    matches.push({ title: m[1].trim(), index: m.index + m[0].length, rawStart: m.index });
+  }
+  if (matches.length < 2) {
+    // No sections found — just split by commas as steps
+    const steps = text.split(',').map(s => s.trim()).filter(Boolean);
+    if (steps.length > 1) {
+      return [{ title: '', steps: steps.map(s => ({ text: s, done: false })) }];
+    }
+    return [];
+  }
+  matches.forEach((match, i) => {
+    const end = i + 1 < matches.length ? matches[i+1].rawStart : text.length;
+    const content = text.slice(match.index, end);
+    const steps = content.split(',').map(s => s.trim()).filter(Boolean)
+      .map(s => ({ text: s, done: false }));
+    if (steps.length) sections.push({ title: match.title, steps });
+  });
+  return sections;
+}
+
+function previewPatternParse() {
+  const raw = document.getElementById('pat-notes').value;
+  const preview = document.getElementById('pat-preview');
+  if (!raw.trim()) { preview.style.display = 'none'; return; }
+  const sections = parsePatternInstructions(raw);
+  if (!sections.length) { preview.style.display = 'none'; return; }
+  preview.style.display = 'block';
+  preview.innerHTML = `
+    <div style="font-size:11px;font-weight:700;letter-spacing:0.5px;text-transform:uppercase;color:var(--muted);margin-bottom:8px">Preview — how it'll look</div>
+    <div style="background:var(--cream-dark);border-radius:var(--radius-sm);padding:12px;max-height:200px;overflow-y:auto">
+      ${renderSectionsHTML(sections, 'preview', true)}
+    </div>`;
+}
+
+function renderSectionsHTML(sections, patId, preview) {
+  return sections.map((sec, si) => `
+    <div style="margin-bottom:${preview?'10px':'14px'}">
+      ${sec.title ? `<div style="font-size:${preview?'11px':'13px'};font-weight:700;letter-spacing:0.4px;text-transform:uppercase;color:var(--rose-dark);margin-bottom:${preview?'5px':'8px'};padding-bottom:4px;border-bottom:1.5px solid var(--rose-light)">${sec.title}</div>` : ''}
+      ${sec.steps.map((step, ti) => `
+        <label style="display:flex;align-items:flex-start;gap:10px;padding:${preview?'3px':'6px'} 0;cursor:${preview?'default':'pointer'};border-bottom:0.5px solid var(--border)">
+          <input type="checkbox" ${step.done?'checked':''} ${preview?'disabled':''} 
+            onchange="togglePatternStep('${patId}',${si},${ti},this.checked)"
+            style="margin-top:3px;width:16px;height:16px;accent-color:var(--rose);flex-shrink:0;cursor:pointer">
+          <span style="font-size:${preview?'12px':'14px'};color:${step.done?'var(--muted)':'var(--charcoal-soft)'};line-height:1.5;${step.done?'text-decoration:line-through;':''}">${step.text}</span>
+        </label>`).join('')}
+    </div>`).join('');
+}
+
+function togglePatternStep(patId, sectionIdx, stepIdx, checked) {
+  const patterns = LS.get('patterns');
+  const p = patterns.find(x => x.id === patId);
+  if (!p || !p.sections) return;
+  p.sections[sectionIdx].steps[stepIdx].done = checked;
+  LS.set('patterns', patterns);
+}
+
 function renderPatterns() {
   const patterns = LS.get('patterns');
   const el = document.getElementById('pattern-list');
@@ -1327,41 +1642,65 @@ function renderPatterns() {
     return;
   }
   const diffLabels = ['','Beginner','Easy','Intermediate','Advanced','Expert'];
-  el.innerHTML = patterns.map(p => `
-    <div class="card">
+  el.innerHTML = patterns.map(p => {
+    const sections = p.sections && p.sections.length ? p.sections : (p.notes ? parsePatternInstructions(p.notes) : []);
+    const totalSteps = sections.reduce((n,s) => n + s.steps.length, 0);
+    const doneSteps  = sections.reduce((n,s) => n + s.steps.filter(x=>x.done).length, 0);
+    const pct = totalSteps ? Math.round(doneSteps / totalSteps * 100) : 0;
+    return `
+    <div class="card" id="pat-card-${p.id}">
       <div class="row-between" style="margin-bottom:6px">
         <div style="font-size:15px;font-weight:600;flex:1;padding-right:8px">${p.name}</div>
         <span class="badge badge-rose" style="font-size:10px;flex-shrink:0">${diffLabels[parseInt(p.diff)]||''}</span>
       </div>
-      ${p.source ? `<div style="font-size:12px;color:var(--muted);margin-bottom:6px">📍 ${p.source}</div>` : ''}
+      ${p.source ? `<div style="font-size:12px;color:var(--muted);margin-bottom:4px">📍 ${p.source}</div>` : ''}
       ${p.tags ? `<div class="tags-row" style="margin-bottom:8px">${p.tags.split(',').map(t=>`<span class="tag">${t.trim()}</span>`).join('')}</div>` : ''}
-      ${p.notes ? `<div style="font-size:13px;color:var(--charcoal-soft);line-height:1.6;margin-bottom:8px;white-space:pre-wrap;max-height:120px;overflow:hidden">${p.notes}</div>` : ''}
-      ${p.url ? `<a href="${p.url}" target="_blank" rel="noopener" style="font-size:13px;color:var(--rose-dark);display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;margin-bottom:8px">🔗 ${p.url}</a>` : ''}
-      <div style="text-align:right">
+      ${totalSteps ? `
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px">
+          <div class="progress-bar" style="flex:1"><div class="progress-fill" style="width:${pct}%;background:${pct===100?'var(--sage)':'var(--rose)'}"></div></div>
+          <div style="font-size:12px;color:var(--muted);flex-shrink:0">${doneSteps}/${totalSteps}</div>
+        </div>` : ''}
+      ${sections.length ? `
+        <div id="pat-steps-${p.id}">
+          ${renderSectionsHTML(sections, p.id, false)}
+        </div>` : (p.notes ? `<div style="font-size:13px;color:var(--charcoal-soft);line-height:1.6;margin-bottom:8px;white-space:pre-wrap">${p.notes}</div>` : '')}
+      ${p.url ? `<a href="${p.url}" target="_blank" rel="noopener" style="font-size:13px;color:var(--rose-dark);display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;margin:8px 0">🔗 ${p.url}</a>` : ''}
+      <div style="display:flex;gap:8px;margin-top:10px">
+        ${totalSteps ? `<button class="btn btn-sm btn-sage" onclick="resetPatternChecks('${p.id}')">Reset ✓</button>` : ''}
+        <div style="flex:1"></div>
         <button class="btn btn-sm" style="color:var(--rose);border-color:var(--rose)" onclick="deletePattern('${p.id}')">Delete</button>
       </div>
-    </div>`).join('');
+    </div>`;
+  }).join('');
 }
 
-function diffDotsStatic(n) {
-  const labels = ['','Beginner','Easy','Intermediate','Advanced','Expert'];
-  return `<span class="badge badge-rose" style="font-size:11px">${labels[n]||''}</span>`;
+function resetPatternChecks(id) {
+  const patterns = LS.get('patterns');
+  const p = patterns.find(x => x.id === id);
+  if (!p || !p.sections) return;
+  p.sections.forEach(s => s.steps.forEach(st => st.done = false));
+  LS.set('patterns', patterns);
+  renderPatterns();
 }
 
 function savePattern() {
   const name = document.getElementById('pat-name').value.trim();
   if (!name) return alert('Please enter a pattern name.');
+  const rawNotes = document.getElementById('pat-notes').value.trim();
+  const sections = parsePatternInstructions(rawNotes);
   const patterns = LS.get('patterns');
   patterns.push({
     id: 'pat_'+Date.now(), name,
     source: document.getElementById('pat-source').value.trim(),
-    diff: document.getElementById('pat-diff').value,
-    tags: document.getElementById('pat-tags').value.trim(),
-    notes: document.getElementById('pat-notes').value.trim(),
-    url: document.getElementById('pat-url').value.trim(),
+    diff:   document.getElementById('pat-diff').value,
+    tags:   document.getElementById('pat-tags').value.trim(),
+    notes:  rawNotes,
+    sections,
+    url:    document.getElementById('pat-url').value.trim(),
   });
   LS.set('patterns', patterns);
   ['pat-name','pat-source','pat-tags','pat-notes','pat-url'].forEach(id => document.getElementById(id).value='');
+  document.getElementById('pat-preview').style.display = 'none';
   closeModal('modal-add-pattern');
   renderPatterns();
 }
@@ -1596,6 +1935,438 @@ function showSyncResult(msg, type) {
   const el = document.getElementById('sync-result');
   if (!el) return;
   el.innerHTML = `<div class="card-sm" style="background:var(--${type}-light);border-color:var(--${type});white-space:pre-wrap;font-size:13px;color:var(--${type}-dark)">${msg}</div>`;
+}
+
+// ═══════════════════════════════════════════════════
+// STITCH SPEED REFERENCE (stitches per minute by weight)
+// Based on typical intermediate crocheter baselines.
+// Lace slowest (tiny hook, fine yarn), Jumbo fastest (big loops).
+// Complex stitches (bobble, puff) roughly half speed of dc.
+// ═══════════════════════════════════════════════════
+const SPEED_REF = {
+  // [stitches/min]: lace, fingering, sport, dk, worsted, bulky, super-bulky, jumbo
+  'sc':       [12, 18, 22, 26, 30, 36, 42, 50],
+  'hdc':      [10, 15, 19, 23, 27, 32, 38, 46],
+  'dc':       [ 9, 13, 17, 21, 25, 30, 35, 43],
+  'tr':       [ 7, 11, 14, 18, 21, 26, 31, 38],
+  'sl-st':    [18, 25, 30, 35, 40, 47, 54, 62],
+  'bobble':   [ 4,  6,  8, 10, 13, 16, 19, 23],
+  'puff':     [ 4,  6,  8, 10, 12, 15, 18, 22],
+  'granny':   [ 5,  8, 10, 13, 16, 20, 24, 29],
+  'other':    [ 8, 12, 16, 20, 24, 29, 34, 41],
+};
+const WEIGHT_IDX = { lace:0, fingering:1, sport:2, dk:3, worsted:4, bulky:5, 'super-bulky':6, jumbo:7 };
+const WEIGHT_NAMES = ['Lace (0)','Fingering (1)','Sport (2)','DK (3)','Worsted (4)','Bulky (5)','Super Bulky (6)','Jumbo (7)'];
+
+function getRefSpeed(stitchKey, weightKey) {
+  const arr = SPEED_REF[stitchKey] || SPEED_REF['other'];
+  const idx = WEIGHT_IDX[weightKey] ?? 4;
+  return arr[idx];
+}
+
+// Get personal speed from session history (weighted average of last 10 matching sessions)
+function getPersonalSpeed(stitchKey, weightKey) {
+  const sessions = LS.get('sessions');
+  const matching = sessions.filter(s => s.stitch === stitchKey && s.weight === weightKey && s.spm > 0);
+  if (!matching.length) return null;
+  const recent = matching.slice(-10);
+  const avg = recent.reduce((a,s) => a + s.spm, 0) / recent.length;
+  return Math.round(avg * 10) / 10;
+}
+
+function getBestSpeed(stitchKey, weightKey) {
+  return getPersonalSpeed(stitchKey, weightKey) || getRefSpeed(stitchKey, weightKey);
+}
+
+// ═══════════════════════════════════════════════════
+// SESSION ENGINE
+// ═══════════════════════════════════════════════════
+let sessActive = false;
+let sessStartTime = 0;
+let sessElapsed = 0;
+let sessStitches = 0;
+let sessInterval = null;
+let sessMeta = {};
+
+function renderSessionsScreen() {
+  // Populate project dropdown
+  const sel = document.getElementById('sess-project');
+  if (sel) {
+    const projects = LS.get('projects');
+    const curr = sel.value;
+    sel.innerHTML = '<option value="">— no project —</option>' +
+      projects.filter(p => p.status === 'WIP').map(p => `<option value="${p.id}" ${p.id===curr?'selected':''}>${p.name}</option>`).join('');
+  }
+  // If a session is currently live, restore UI
+  if (sessActive) {
+    document.getElementById('sess-start-wrap').style.display = 'none';
+    document.getElementById('sess-active-card').style.display = 'block';
+  }
+  renderSpeedRefTable();
+  showSessTab(document.querySelector('#sess-tabs .tab-btn.active')?.dataset.tab || 'log');
+}
+
+function showSessTab(tab, el) {
+  ['log','hist','stats','est'].forEach(t => {
+    const p = document.getElementById('sess-panel-'+t);
+    const b = document.getElementById('sess-tab-'+t);
+    if (p) p.style.display = t === tab ? 'block' : 'none';
+    if (b) { b.classList.toggle('active', t === tab); b.dataset.tab = t; }
+  });
+  if (tab === 'hist') renderSessionHistory();
+  if (tab === 'stats') renderSessionStats();
+  if (tab === 'est') renderSpeedRefTable();
+}
+
+function startSession() {
+  sessMeta = {
+    stitch: document.getElementById('sess-stitch').value,
+    weight: document.getElementById('sess-weight').value,
+    hook:   document.getElementById('sess-hook').value,
+    project: document.getElementById('sess-project')?.value || '',
+  };
+  sessStartTime = Date.now();
+  sessElapsed = 0;
+  sessStitches = 0;
+  sessActive = true;
+  document.getElementById('sess-start-wrap').style.display = 'none';
+  document.getElementById('sess-active-card').style.display = 'block';
+  updateSessDisplay();
+  sessInterval = setInterval(() => {
+    sessElapsed = Math.floor((Date.now() - sessStartTime) / 1000);
+    updateSessDisplay();
+  }, 1000);
+}
+
+function sessAdjust(delta) {
+  sessStitches = Math.max(0, sessStitches + delta);
+  updateSessDisplay();
+}
+
+function updateSessDisplay() {
+  const h = Math.floor(sessElapsed / 3600);
+  const m = Math.floor((sessElapsed % 3600) / 60);
+  const s = sessElapsed % 60;
+  document.getElementById('sess-timer').textContent =
+    `${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
+  document.getElementById('sess-stitch-count').textContent = sessStitches;
+  const mins = sessElapsed / 60;
+  const spm = mins > 0.1 ? Math.round((sessStitches / mins) * 10) / 10 : null;
+  document.getElementById('sess-spm').textContent = spm ? spm.toFixed(1) : '—';
+  // Live estimate: at this pace, how long for a 1000-stitch project?
+  if (spm && spm > 0) {
+    const refSpm = getRefSpeed(sessMeta.stitch, sessMeta.weight);
+    const liveEl = document.getElementById('sess-live-est');
+    if (liveEl) liveEl.textContent = `At this pace: ~${fmtMins(1000/spm)} per 1,000 sts · Reference: ${fmtMins(1000/refSpm)}/1k`;
+  }
+}
+
+function endSession() {
+  if (!sessActive) return;
+  clearInterval(sessInterval);
+  sessActive = false;
+  const mins = sessElapsed / 60;
+  const spm = mins > 0.1 ? Math.round((sessStitches / mins) * 10) / 10 : 0;
+  const session = {
+    id: 'sess_' + Date.now(),
+    ...sessMeta,
+    stitches: sessStitches,
+    durationSecs: sessElapsed,
+    spm,
+    date: new Date().toISOString(),
+  };
+  const sessions = LS.get('sessions');
+  sessions.push(session);
+  LS.set('sessions', sessions);
+  document.getElementById('sess-active-card').style.display = 'none';
+  document.getElementById('sess-start-wrap').style.display = 'block';
+  const res = document.getElementById('sess-save-result');
+  if (res) {
+    const personalNote = spm > 0 ? ` Your speed: <strong>${spm} sts/min</strong>` : '';
+    res.innerHTML = `<div class="card-sm" style="background:var(--sage-light);color:var(--sage-dark)">✅ Session saved! ${fmtTime(sessElapsed)} · ${sessStitches} stitches${personalNote}</div>`;
+    setTimeout(() => { res.innerHTML = ''; }, 5000);
+  }
+  sessStitches = 0; sessElapsed = 0;
+  renderHome();
+}
+
+function renderSessionHistory() {
+  const sessions = LS.get('sessions');
+  const el = document.getElementById('sess-history-list');
+  if (!sessions.length) {
+    el.innerHTML = `<div class="empty-state"><div class="empty-icon">🕐</div><div class="empty-msg">No sessions logged yet</div></div>`;
+    return;
+  }
+  const sorted = [...sessions].reverse();
+  el.innerHTML = sorted.map(s => {
+    const d = new Date(s.date);
+    const dateStr = d.toLocaleDateString(undefined, {month:'short',day:'numeric',year:'numeric'});
+    const projects = LS.get('projects');
+    const proj = projects.find(p => p.id === s.project);
+    return `<div class="card-sm" style="margin-bottom:8px">
+      <div class="row-between" style="margin-bottom:4px">
+        <div style="font-size:13px;font-weight:600">${dateStr}</div>
+        <div style="font-size:12px;color:var(--muted)">${fmtTime(s.durationSecs)}</div>
+      </div>
+      <div style="font-size:12px;color:var(--muted);margin-bottom:4px">
+        ${s.stitch?.toUpperCase()} · ${s.weight} · ${s.hook}${proj ? ' · '+proj.name : ''}
+      </div>
+      <div style="display:flex;gap:12px">
+        <div><span style="font-size:16px;font-weight:700;color:var(--charcoal)">${s.stitches}</span> <span style="font-size:11px;color:var(--muted)">sts</span></div>
+        ${s.spm ? `<div><span style="font-size:16px;font-weight:700;color:var(--rose)">${s.spm}</span> <span style="font-size:11px;color:var(--muted)">sts/min</span></div>` : ''}
+      </div>
+      <button style="border:none;background:none;color:var(--muted);font-size:12px;cursor:pointer;margin-top:4px" onclick="deleteSession('${s.id}')">Delete</button>
+    </div>`;
+  }).join('');
+}
+
+function deleteSession(id) {
+  LS.set('sessions', LS.get('sessions').filter(s => s.id !== id));
+  renderSessionHistory();
+  renderSessionStats();
+}
+
+function renderSessionStats() {
+  const sessions = LS.get('sessions');
+  const el = document.getElementById('sess-stats-content');
+  if (!sessions.length) {
+    el.innerHTML = `<div class="empty-state"><div class="empty-icon">📊</div><div class="empty-msg">Log sessions to see your stats</div></div>`;
+    return;
+  }
+  const totalSts  = sessions.reduce((a,s) => a + (s.stitches||0), 0);
+  const totalSecs = sessions.reduce((a,s) => a + (s.durationSecs||0), 0);
+  const validSpm  = sessions.filter(s => s.spm > 0);
+  const avgSpm    = validSpm.length ? (validSpm.reduce((a,s) => a+s.spm, 0) / validSpm.length).toFixed(1) : '—';
+  const bestSpm   = validSpm.length ? Math.max(...validSpm.map(s=>s.spm)).toFixed(1) : '—';
+
+  // By stitch type
+  const byStitch = {};
+  sessions.forEach(s => {
+    if (!s.stitch || !s.spm) return;
+    if (!byStitch[s.stitch]) byStitch[s.stitch] = [];
+    byStitch[s.stitch].push(s.spm);
+  });
+
+  // By weight
+  const byWeight = {};
+  sessions.forEach(s => {
+    if (!s.weight || !s.spm) return;
+    if (!byWeight[s.weight]) byWeight[s.weight] = [];
+    byWeight[s.weight].push(s.spm);
+  });
+
+  el.innerHTML = `
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:16px">
+      <div class="card" style="text-align:center;padding:14px;margin-bottom:0">
+        <div style="font-size:22px;font-weight:700;color:var(--rose)">${sessions.length}</div>
+        <div style="font-size:11px;color:var(--muted)">total sessions</div>
+      </div>
+      <div class="card" style="text-align:center;padding:14px;margin-bottom:0">
+        <div style="font-size:22px;font-weight:700;color:var(--sage)">${fmtTime(totalSecs)}</div>
+        <div style="font-size:11px;color:var(--muted)">total time</div>
+      </div>
+      <div class="card" style="text-align:center;padding:14px;margin-bottom:0">
+        <div style="font-size:22px;font-weight:700;color:var(--charcoal)">${totalSts.toLocaleString()}</div>
+        <div style="font-size:11px;color:var(--muted)">total stitches</div>
+      </div>
+      <div class="card" style="text-align:center;padding:14px;margin-bottom:0">
+        <div style="font-size:22px;font-weight:700;color:var(--rose)">${avgSpm}</div>
+        <div style="font-size:11px;color:var(--muted)">avg sts/min</div>
+      </div>
+    </div>
+    <div class="card" style="padding:14px;margin-bottom:12px">
+      <div style="font-size:11px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;color:var(--muted);margin-bottom:10px">Your Speed by Stitch</div>
+      ${Object.entries(byStitch).map(([st, spms]) => {
+        const avg = (spms.reduce((a,b)=>a+b,0)/spms.length).toFixed(1);
+        const ref = getRefSpeed(st, 'worsted');
+        const pct = Math.min(100, Math.round((avg/ref)*100));
+        return `<div style="margin-bottom:8px">
+          <div class="row-between" style="margin-bottom:3px">
+            <span style="font-size:13px;text-transform:uppercase;font-weight:600">${st}</span>
+            <span style="font-size:13px;color:var(--rose);font-weight:700">${avg} sts/min</span>
+          </div>
+          <div style="height:5px;background:var(--cream-dark);border-radius:3px">
+            <div style="height:5px;width:${pct}%;background:var(--rose);border-radius:3px;transition:width .3s"></div>
+          </div>
+          <div style="font-size:11px;color:var(--muted);margin-top:2px">vs ${ref} ref · ${pct}% of reference · ${spms.length} session${spms.length>1?'s':''}</div>
+        </div>`;
+      }).join('') || '<div style="color:var(--muted);font-size:13px">No data yet</div>'}
+    </div>
+    <div class="card" style="padding:14px">
+      <div style="font-size:11px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;color:var(--muted);margin-bottom:10px">Your Speed by Yarn Weight</div>
+      ${Object.entries(byWeight).map(([wt, spms]) => {
+        const avg = (spms.reduce((a,b)=>a+b,0)/spms.length).toFixed(1);
+        return `<div class="row-between" style="padding:5px 0;border-bottom:.5px solid var(--border)">
+          <span style="font-size:13px;color:var(--charcoal-soft)">${wt}</span>
+          <span style="font-size:13px;font-weight:700;color:var(--sage)">${avg} sts/min <span style="font-size:11px;color:var(--muted);font-weight:400">(${spms.length} sess)</span></span>
+        </div>`;
+      }).join('') || '<div style="color:var(--muted);font-size:13px">No data yet</div>'}
+    </div>`;
+}
+
+function calcEstimate() {
+  const stitchKey = document.getElementById('est-stitch').value;
+  const weightKey = document.getElementById('est-weight').value;
+  const totalSts  = parseInt(document.getElementById('est-stitches').value) || 0;
+  const breakMins = parseInt(document.getElementById('est-breaks').value) || 0;
+  if (!totalSts) return;
+  const personal = getPersonalSpeed(stitchKey, weightKey);
+  const ref = getRefSpeed(stitchKey, weightKey);
+  const useSpeed = personal || ref;
+  const crochetMins = totalSts / useSpeed;
+  const breakFrac = breakMins / 60; // breaks per hour of crocheting
+  const totalMins = crochetMins * (1 + breakFrac);
+  const el = document.getElementById('est-result');
+  el.innerHTML = `
+    <div class="card" style="background:var(--sage-light);border-color:var(--sage);margin-bottom:0">
+      <div style="font-size:13px;font-weight:700;color:var(--sage-dark);margin-bottom:10px">Estimate for ${totalSts.toLocaleString()} stitches</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+        <div style="background:white;border-radius:8px;padding:10px;text-align:center">
+          <div style="font-size:11px;color:var(--muted);margin-bottom:4px">⏱ Crochet time</div>
+          <div style="font-size:18px;font-weight:700;color:var(--charcoal)">${fmtMins(crochetMins)}</div>
+        </div>
+        <div style="background:white;border-radius:8px;padding:10px;text-align:center">
+          <div style="font-size:11px;color:var(--muted);margin-bottom:4px">🕐 With breaks</div>
+          <div style="font-size:18px;font-weight:700;color:var(--rose)">${fmtMins(totalMins)}</div>
+        </div>
+      </div>
+      <div style="margin-top:10px;font-size:12px;color:var(--sage-dark);line-height:1.5">
+        Speed used: <strong>${useSpeed} sts/min</strong> ${personal ? '(your personal average)' : '(reference — log sessions to personalise)'}<br>
+        At ${useSpeed} sts/min · ${breakMins} min breaks/hr
+      </div>
+    </div>`;
+}
+
+function renderSpeedRefTable() {
+  const el = document.getElementById('speed-ref-table');
+  if (!el) return;
+  const stitches = ['sc','hdc','dc','tr','bobble','puff'];
+  const weights = ['lace','dk','worsted','bulky','jumbo'];
+  el.innerHTML = `
+    <div style="font-size:11px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;color:var(--muted);margin-bottom:10px">Reference sts/min (intermediate crocheter)</div>
+    <div style="overflow-x:auto">
+      <table style="width:100%;border-collapse:collapse;font-size:12px">
+        <thead><tr>
+          <th style="text-align:left;padding:5px 6px;color:var(--muted);font-size:10px;border-bottom:1px solid var(--border)">Stitch</th>
+          ${weights.map(w => `<th style="padding:5px 4px;color:var(--muted);font-size:10px;border-bottom:1px solid var(--border)">${w}</th>`).join('')}
+        </tr></thead>
+        <tbody>
+          ${stitches.map(st => `<tr>
+            <td style="padding:6px;font-weight:600;color:var(--charcoal);border-bottom:.5px solid var(--border)">${st}</td>
+            ${weights.map(w => {
+              const ref = getRefSpeed(st, w);
+              const personal = getPersonalSpeed(st, w);
+              return `<td style="padding:6px 4px;text-align:center;border-bottom:.5px solid var(--border)">
+                <span style="color:${personal?'var(--rose)':'var(--charcoal-soft)'};font-weight:${personal?'700':'400'}">${personal||ref}</span>
+              </td>`;
+            }).join('')}
+          </tr>`).join('')}
+        </tbody>
+      </table>
+    </div>
+    <div style="margin-top:8px;font-size:11px;color:var(--muted)">Rose = your personal speed · Black = reference</div>`;
+}
+
+// ─── helpers ───
+function fmtTime(secs) {
+  const h = Math.floor(secs/3600), m = Math.floor((secs%3600)/60), s = secs%60;
+  return h > 0 ? `${h}h ${m}m` : m > 0 ? `${m}m ${s}s` : `${s}s`;
+}
+function fmtMins(mins) {
+  if (mins < 1) return `${Math.round(mins*60)}s`;
+  if (mins < 60) return `${Math.round(mins)}m`;
+  const h = Math.floor(mins/60), m = Math.round(mins%60);
+  return m > 0 ? `${h}h ${m}m` : `${h}h`;
+}
+
+// ═══════════════════════════════════════════════════
+// STITCH PHOTOS — SVG diagram per stitch
+// ═══════════════════════════════════════════════════
+// Embedded SVG symbol diagrams (crochet chart symbols, standard Craft Yarn Council)
+const STITCH_DIAGRAMS = {
+  'ch': `<svg viewBox="0 0 60 30" xmlns="http://www.w3.org/2000/svg"><ellipse cx="30" cy="15" rx="22" ry="10" fill="none" stroke="#A5607A" stroke-width="2.5"/></svg>`,
+  'sl-st': `<svg viewBox="0 0 60 30" xmlns="http://www.w3.org/2000/svg"><ellipse cx="30" cy="15" rx="22" ry="10" fill="none" stroke="#A5607A" stroke-width="2.5"/><line x1="20" y1="15" x2="40" y2="15" stroke="#A5607A" stroke-width="2"/></svg>`,
+  'sc': `<svg viewBox="0 0 40 60" xmlns="http://www.w3.org/2000/svg"><line x1="20" y1="5" x2="20" y2="55" stroke="#A5607A" stroke-width="2.5"/><line x1="12" y1="28" x2="28" y2="28" stroke="#A5607A" stroke-width="2.5"/></svg>`,
+  'hdc': `<svg viewBox="0 0 40 70" xmlns="http://www.w3.org/2000/svg"><line x1="20" y1="5" x2="20" y2="65" stroke="#A5607A" stroke-width="2.5"/><line x1="10" y1="22" x2="30" y2="22" stroke="#A5607A" stroke-width="2"/></svg>`,
+  'dc': `<svg viewBox="0 0 40 80" xmlns="http://www.w3.org/2000/svg"><line x1="20" y1="5" x2="20" y2="75" stroke="#A5607A" stroke-width="2.5"/><line x1="10" y1="22" x2="30" y2="22" stroke="#A5607A" stroke-width="2"/><line x1="10" y1="32" x2="30" y2="32" stroke="#A5607A" stroke-width="2"/></svg>`,
+  'tr': `<svg viewBox="0 0 40 100" xmlns="http://www.w3.org/2000/svg"><line x1="20" y1="5" x2="20" y2="95" stroke="#A5607A" stroke-width="2.5"/><line x1="10" y1="22" x2="30" y2="22" stroke="#A5607A" stroke-width="2"/><line x1="10" y1="32" x2="30" y2="32" stroke="#A5607A" stroke-width="2"/><line x1="10" y1="42" x2="30" y2="42" stroke="#A5607A" stroke-width="2"/></svg>`,
+  'bobble': `<svg viewBox="0 0 60 80" xmlns="http://www.w3.org/2000/svg"><ellipse cx="30" cy="25" rx="22" ry="18" fill="none" stroke="#A5607A" stroke-width="2.5"/><path d="M16 30 Q20 18 24 30 Q28 18 32 30 Q36 18 40 30 Q44 18 48 30" fill="none" stroke="#A5607A" stroke-width="2"/><line x1="30" y1="43" x2="30" y2="75" stroke="#A5607A" stroke-width="2.5"/></svg>`,
+  'puff': `<svg viewBox="0 0 60 80" xmlns="http://www.w3.org/2000/svg"><ellipse cx="30" cy="28" rx="24" ry="22" fill="none" stroke="#A5607A" stroke-width="2.5"/><ellipse cx="30" cy="26" rx="16" ry="14" fill="none" stroke="#A5607A" stroke-width="1.5" stroke-dasharray="3,2"/><line x1="30" y1="50" x2="30" y2="75" stroke="#A5607A" stroke-width="2.5"/></svg>`,
+  'shell': `<svg viewBox="0 0 100 80" xmlns="http://www.w3.org/2000/svg"><path d="M10 75 Q20 20 30 75" fill="none" stroke="#A5607A" stroke-width="2.5"/><path d="M25 75 Q35 15 45 75" fill="none" stroke="#A5607A" stroke-width="2.5"/><path d="M40 75 Q50 10 60 75" fill="none" stroke="#A5607A" stroke-width="2.5"/><path d="M55 75 Q65 15 75 75" fill="none" stroke="#A5607A" stroke-width="2.5"/><path d="M70 75 Q80 20 90 75" fill="none" stroke="#A5607A" stroke-width="2.5"/></svg>`,
+  'magic-ring': `<svg viewBox="0 0 80 80" xmlns="http://www.w3.org/2000/svg"><circle cx="40" cy="40" r="28" fill="none" stroke="#A5607A" stroke-width="2.5" stroke-dasharray="6,3"/><circle cx="40" cy="40" r="8" fill="none" stroke="#A5607A" stroke-width="2"/></svg>`,
+  'granny-sq': `<svg viewBox="0 0 90 90" xmlns="http://www.w3.org/2000/svg"><rect x="10" y="10" width="70" height="70" fill="none" stroke="#A5607A" stroke-width="2.5" rx="4"/><line x1="10" y1="45" x2="80" y2="45" stroke="#A5607A" stroke-width="1.5" stroke-dasharray="4,3"/><line x1="45" y1="10" x2="45" y2="80" stroke="#A5607A" stroke-width="1.5" stroke-dasharray="4,3"/><circle cx="45" cy="45" r="8" fill="none" stroke="#A5607A" stroke-width="2"/></svg>`,
+  'fpdc': `<svg viewBox="0 0 50 90" xmlns="http://www.w3.org/2000/svg"><line x1="25" y1="5" x2="25" y2="85" stroke="#A5607A" stroke-width="2.5"/><path d="M5 45 Q15 30 25 45 Q35 60 45 45" fill="none" stroke="#A5607A" stroke-width="2.5"/><line x1="14" y1="22" x2="36" y2="22" stroke="#A5607A" stroke-width="2"/><line x1="14" y1="32" x2="36" y2="32" stroke="#A5607A" stroke-width="2"/></svg>`,
+  'bpdc': `<svg viewBox="0 0 50 90" xmlns="http://www.w3.org/2000/svg"><line x1="25" y1="5" x2="25" y2="85" stroke="#A5607A" stroke-width="2.5"/><path d="M5 45 Q15 60 25 45 Q35 30 45 45" fill="none" stroke="#A5607A" stroke-width="2.5"/><line x1="14" y1="22" x2="36" y2="22" stroke="#A5607A" stroke-width="2"/><line x1="14" y1="32" x2="36" y2="32" stroke="#A5607A" stroke-width="2"/></svg>`,
+  'v-stitch': `<svg viewBox="0 0 60 80" xmlns="http://www.w3.org/2000/svg"><line x1="20" y1="10" x2="30" y2="75" stroke="#A5607A" stroke-width="2.5"/><line x1="40" y1="10" x2="30" y2="75" stroke="#A5607A" stroke-width="2.5"/><line x1="12" y1="30" x2="28" y2="30" stroke="#A5607A" stroke-width="1.5"/><line x1="32" y1="30" x2="48" y2="30" stroke="#A5607A" stroke-width="1.5"/></svg>`,
+  'sc2tog': `<svg viewBox="0 0 70 80" xmlns="http://www.w3.org/2000/svg"><line x1="20" y1="10" x2="35" y2="70" stroke="#A5607A" stroke-width="2.5"/><line x1="50" y1="10" x2="35" y2="70" stroke="#A5607A" stroke-width="2.5"/><line x1="12" y1="28" x2="28" y2="28" stroke="#A5607A" stroke-width="2"/><line x1="42" y1="28" x2="58" y2="28" stroke="#A5607A" stroke-width="2"/></svg>`,
+  'inc': `<svg viewBox="0 0 80 80" xmlns="http://www.w3.org/2000/svg"><line x1="25" y1="10" x2="40" y2="70" stroke="#A5607A" stroke-width="2.5"/><line x1="55" y1="10" x2="40" y2="70" stroke="#A5607A" stroke-width="2.5"/><line x1="16" y1="28" x2="34" y2="28" stroke="#A5607A" stroke-width="2"/><line x1="46" y1="28" x2="64" y2="28" stroke="#A5607A" stroke-width="2"/></svg>`,
+  'picot': `<svg viewBox="0 0 60 70" xmlns="http://www.w3.org/2000/svg"><ellipse cx="30" cy="20" rx="14" ry="14" fill="none" stroke="#A5607A" stroke-width="2.5"/><line x1="30" y1="34" x2="30" y2="65" stroke="#A5607A" stroke-width="2.5"/></svg>`,
+};
+
+// Add diagram to stitch modal
+const _origOpenStitchModal = openStitchModal;
+function openStitchModal(id) {
+  _origOpenStitchModal(id);
+  // inject diagram after modal opens
+  const s = STITCHES.find(st => st.id === id);
+  if (!s) return;
+  const diag = STITCH_DIAGRAMS[id];
+  if (!diag) return;
+  const inner = document.getElementById('stitch-modal-inner');
+  if (!inner) return;
+  // Insert diagram block after the description paragraph
+  const diagDiv = document.createElement('div');
+  diagDiv.style.cssText = 'background:var(--cream-dark);border-radius:10px;padding:16px;display:flex;align-items:center;justify-content:center;margin-bottom:14px;min-height:80px';
+  diagDiv.innerHTML = `<div style="text-align:center">${diag}<div style="font-size:11px;color:var(--muted);margin-top:8px">Crochet chart symbol</div></div>`;
+  // Find the desc paragraph and insert after it
+  const paras = inner.querySelectorAll('p');
+  if (paras.length) paras[paras.length-1].after(diagDiv);
+  else inner.prepend(diagDiv);
+}
+
+// ═══════════════════════════════════════════════════
+// PROGRESS PHOTOS — per project, stored in IDB
+// ═══════════════════════════════════════════════════
+function openProgressPhotos(projectId) {
+  dbGet('photos_' + projectId).then(photos => {
+    const arr = Array.isArray(photos) ? photos : [];
+    const modal = document.getElementById('modal-photos');
+    document.getElementById('photo-modal-project-id').value = projectId;
+    const gallery = document.getElementById('photo-gallery');
+    gallery.innerHTML = arr.length
+      ? arr.map((p,i) => `
+          <div style="position:relative;border-radius:8px;overflow:hidden;background:var(--cream-dark);aspect-ratio:1">
+            <img src="${p.data}" style="width:100%;height:100%;object-fit:cover" alt="Progress ${i+1}">
+            <button onclick="deleteProgressPhoto('${projectId}',${i})" style="position:absolute;top:4px;right:4px;background:rgba(0,0,0,.55);border:none;color:#fff;border-radius:50%;width:24px;height:24px;font-size:14px;cursor:pointer;display:flex;align-items:center;justify-content:center;line-height:1">×</button>
+            ${p.caption ? `<div style="position:absolute;bottom:0;left:0;right:0;background:rgba(0,0,0,.5);color:#fff;font-size:11px;padding:4px 6px">${p.caption}</div>` : ''}
+          </div>`).join('')
+      : `<div style="grid-column:1/-1;text-align:center;color:var(--muted);font-size:13px;padding:24px">No photos yet — add your first progress shot!</div>`;
+    openModal('modal-photos');
+  });
+}
+
+function saveProgressPhoto(input) {
+  const projectId = document.getElementById('photo-modal-project-id').value;
+  const file = input.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = e => {
+    dbGet('photos_' + projectId).then(photos => {
+      const arr = Array.isArray(photos) ? photos : [];
+      arr.push({ data: e.target.result, caption: '', date: new Date().toISOString() });
+      dbSet('photos_' + projectId, arr).then(() => openProgressPhotos(projectId));
+    });
+  };
+  reader.readAsDataURL(file);
+  input.value = '';
+}
+
+function deleteProgressPhoto(projectId, idx) {
+  dbGet('photos_' + projectId).then(photos => {
+    const arr = Array.isArray(photos) ? photos : [];
+    arr.splice(idx, 1);
+    dbSet('photos_' + projectId, arr).then(() => openProgressPhotos(projectId));
+  });
 }
 
 // ═══════════════════════════════════════════════════
