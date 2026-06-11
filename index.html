@@ -157,6 +157,7 @@
   .mt-16 { margin-top: 16px; }
   .mb-0 { margin-bottom: 0; }
   select option { background: var(--card-bg); color: var(--charcoal); }
+  .more-panel { display: block; }
 </style>
 </head>
 <body>
@@ -283,290 +284,227 @@
       </div>
     </div>
 
-    <!-- ═══ STITCHES ═══ -->
-    <div class="screen" id="screen-stitches">
-      <div style="position:sticky;top:0;background:var(--bg);padding-bottom:10px;z-index:10">
-        <input type="search" id="stitch-search" placeholder="Search stitches…" oninput="filterStitches(this.value)" style="margin-bottom:0">
-      </div>
-      <div class="tab-bar" id="stitch-cats" style="margin-top:10px">
-        <button class="tab-btn active" onclick="filterStitchCat('all',this)">All</button>
-        <button class="tab-btn" onclick="filterStitchCat('basic',this)">Basic</button>
-        <button class="tab-btn" onclick="filterStitchCat('textured',this)">Textured</button>
-        <button class="tab-btn" onclick="filterStitchCat('special',this)">Special</button>
-      </div>
-      <div class="stitch-grid" id="stitch-grid"></div>
-    </div>
+    <!-- ═══ STITCHES (legacy redirect) ═══ -->
+    <div class="screen" id="screen-stitches" style="display:none!important"></div>
 
     <!-- ═══ STITCH DETAIL (sub-screen) ═══ -->
     <div class="screen" id="screen-stitch-detail">
       <div id="stitch-detail-content"></div>
     </div>
 
-    <!-- ═══ YARN STASH ═══ -->
-    <div class="screen" id="screen-yarn">
-      <div id="yarn-list"></div>
-    </div>
+    <!-- ═══ YARN STASH (legacy redirect) ═══ -->
+    <div class="screen" id="screen-yarn" style="display:none!important"></div>
 
     <!-- ═══ PATTERNS ═══ -->
     <div class="screen" id="screen-patterns">
       <div id="pattern-list"></div>
     </div>
 
-    <!-- ═══ TOOLS ═══ -->
-    <div class="screen" id="screen-tools">
-      <div class="tab-bar" id="tools-tabs">
-        <button class="tab-btn active" onclick="showToolTab('hooks',this)">Hook Sizes</button>
-        <button class="tab-btn" onclick="showToolTab('gauge',this)">Gauge Calc</button>
-        <button class="tab-btn" onclick="showToolTab('glossary',this)">Glossary</button>
-      </div>
-      <div id="tool-hooks" class="tool-panel">
-        <div class="card">
-          <h3 style="margin-bottom:12px">Hook Size Reference</h3>
-          <div style="overflow-x:auto">
-            <table id="hook-table"></table>
-          </div>
-        </div>
-      </div>
-      <div id="tool-gauge" class="tool-panel" style="display:none">
-        <div class="card">
-          <h3 style="margin-bottom:14px">Gauge Calculator</h3>
-          <div class="form-group">
-            <label>Stitches in your swatch</label>
-            <input type="number" id="g-swatch-sts" placeholder="e.g. 20" min="1">
-          </div>
-          <div class="form-group">
-            <label>Rows in your swatch</label>
-            <input type="number" id="g-swatch-rows" placeholder="e.g. 24" min="1">
-          </div>
-          <div class="form-group">
-            <label>Swatch width (cm)</label>
-            <input type="number" id="g-swatch-w" placeholder="e.g. 10" min="1">
-          </div>
-          <div class="form-group">
-            <label>Swatch height (cm)</label>
-            <input type="number" id="g-swatch-h" placeholder="e.g. 10" min="1">
-          </div>
-          <div class="divider"></div>
-          <div class="form-group">
-            <label>Target width (cm)</label>
-            <input type="number" id="g-target-w" placeholder="finished piece width">
-          </div>
-          <div class="form-group">
-            <label>Target height (cm)</label>
-            <input type="number" id="g-target-h" placeholder="finished piece height">
-          </div>
-          <button class="btn btn-fill btn-full" onclick="calcGauge()">Calculate</button>
-          <div id="gauge-result" style="margin-top:16px"></div>
-        </div>
-      </div>
-      <div id="tool-glossary" class="tool-panel" style="display:none">
-        <input type="search" id="gloss-search" placeholder="Search abbreviation…" oninput="filterGlossary(this.value)" style="margin-bottom:12px">
-        <div id="glossary-list"></div>
-      </div>
-    </div>
+    <!-- ═══ TOOLS (legacy redirect) ═══ -->
+    <div class="screen" id="screen-tools" style="display:none!important"></div>
 
-    <!-- ═══ SYNC ═══ -->
-    <div class="screen" id="screen-sync">
-      <div class="card" style="background:var(--rose-light);border-color:var(--rose)">
-        <div style="font-size:15px;font-weight:600;color:var(--rose-dark);margin-bottom:4px">🔄 CraftBase Sync</div>
-        <div class="subtext">Exchange data with your CraftBase Pro app. Use <strong>Export</strong> here, then <strong>Import</strong> in CraftBase (or vice versa).</div>
+    <!-- ═══ SYNC (legacy redirect) ═══ -->
+    <div class="screen" id="screen-sync" style="display:none!important"></div>
+
+    <!-- ═══ MORE ═══ -->
+    <div class="screen" id="screen-more">
+      <div class="tab-bar" id="more-tabs" style="overflow-x:auto;white-space:nowrap;scrollbar-width:none">
+        <button class="tab-btn active" id="more-tab-stash"    onclick="showMoreTab('stash',this)">🧶 Stash</button>
+        <button class="tab-btn"        id="more-tab-stitches" onclick="showMoreTab('stitches',this)">✂️ Stitches</button>
+        <button class="tab-btn"        id="more-tab-sessions" onclick="showMoreTab('sessions',this)">⏱ Sessions</button>
+        <button class="tab-btn"        id="more-tab-tools"    onclick="showMoreTab('tools',this)">🔧 Tools</button>
+        <button class="tab-btn"        id="more-tab-sync"     onclick="showMoreTab('sync',this)">🔄 Sync</button>
       </div>
-
-      <div class="section-label">Export from Crochet Studio</div>
-      <div class="card">
-        <div style="font-size:14px;color:var(--charcoal-soft);margin-bottom:12px;line-height:1.6">Packages your yarn stash, projects, and patterns into a file that CraftBase can import.</div>
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:12px">
-          <div class="card-sm" style="text-align:center;margin-bottom:0">
-            <div style="font-size:20px;font-weight:700;color:var(--rose)" id="sync-yarn-count">0</div>
-            <div style="font-size:11px;color:var(--muted)">yarns</div>
-          </div>
-          <div class="card-sm" style="text-align:center;margin-bottom:0">
-            <div style="font-size:20px;font-weight:700;color:var(--sage)" id="sync-proj-count">0</div>
-            <div style="font-size:11px;color:var(--muted)">projects</div>
-          </div>
-        </div>
-        <button class="btn btn-fill btn-full" onclick="exportToCraftBase()">Export to CraftBase</button>
+      <!-- Stash panel -->
+      <div id="more-panel-stash" class="more-panel">
+        <div id="yarn-list"></div>
       </div>
-
-      <div class="section-label">Import from CraftBase</div>
-      <div class="card">
-        <div style="font-size:14px;color:var(--charcoal-soft);margin-bottom:12px;line-height:1.6">Paste or load a CraftBase export file. Yarn materials (Fiber/Yarn category) and crochet products will be merged — existing records with matching IDs are updated, new ones added.</div>
-        <div class="form-group">
-          <label>Paste CraftBase export JSON</label>
-          <textarea id="sync-import-text" placeholder='{"craftbase_sync":true, "materials":[…], …}' style="min-height:100px;font-size:12px;font-family:monospace"></textarea>
+      <!-- Stitches panel -->
+      <div id="more-panel-stitches" class="more-panel" style="display:none">
+        <div style="position:sticky;top:0;background:var(--bg);padding-bottom:10px;z-index:10">
+          <input type="search" id="stitch-search" placeholder="Search stitches…" oninput="filterStitches(this.value)" style="margin-bottom:0">
         </div>
-        <div style="display:flex;gap:8px">
-          <button class="btn btn-fill btn-full btn-sage" onclick="importFromCraftBase()">Import & Merge</button>
-          <label class="btn btn-full" style="cursor:pointer;justify-content:center">
-            📁 Load file
-            <input type="file" accept=".json" onchange="loadSyncFile(this)" style="display:none">
-          </label>
+        <div class="tab-bar" id="stitch-cats" style="margin-top:10px">
+          <button class="tab-btn active" onclick="filterStitchCat('all',this)">All</button>
+          <button class="tab-btn" onclick="filterStitchCat('basic',this)">Basic</button>
+          <button class="tab-btn" onclick="filterStitchCat('textured',this)">Textured</button>
+          <button class="tab-btn" onclick="filterStitchCat('special',this)">Special</button>
         </div>
-        <div id="sync-result" style="margin-top:12px"></div>
+        <div class="stitch-grid" id="stitch-grid"></div>
       </div>
-
-      <div class="section-label">How it works</div>
-      <div class="card" style="padding:14px">
-        <div class="step-item" style="padding:8px 0">
-          <div class="step-num">1</div>
-          <div class="step-text"><strong>In Crochet Studio:</strong> tap Export → copies JSON to clipboard or downloads file</div>
+      <!-- Sessions panel -->
+      <div id="more-panel-sessions" class="more-panel" style="display:none">
+        <div class="tab-bar" id="sess-tabs">
+          <button class="tab-btn active" id="sess-tab-log"   onclick="showSessTab('log',this)">Log Session</button>
+          <button class="tab-btn"        id="sess-tab-hist"  onclick="showSessTab('hist',this)">History</button>
+          <button class="tab-btn"        id="sess-tab-stats" onclick="showSessTab('stats',this)">Stats</button>
+          <button class="tab-btn"        id="sess-tab-est"   onclick="showSessTab('est',this)">Estimator</button>
         </div>
-        <div class="step-item" style="padding:8px 0">
-          <div class="step-num">2</div>
-          <div class="step-text"><strong>In CraftBase:</strong> go to Import/Export → Crochet Sync → paste or upload the file</div>
-        </div>
-        <div class="step-item" style="padding:8px 0">
-          <div class="step-num">3</div>
-          <div class="step-text"><strong>CraftBase merges:</strong> yarn → materials, projects → products, patterns saved</div>
-        </div>
-        <div class="step-item" style="padding:8px 0;border-bottom:none">
-          <div class="step-num">4</div>
-          <div class="step-text"><strong>Reverse sync:</strong> export from CraftBase, import here to pull in material updates</div>
-        </div>
-      </div>
-    </div>
-
-    <!-- ═══ SESSIONS & STATS ═══ -->
-    <div class="screen" id="screen-sessions">
-      <div class="tab-bar" id="sess-tabs">
-        <button class="tab-btn active" id="sess-tab-log"   onclick="showSessTab('log',this)">Log Session</button>
-        <button class="tab-btn"        id="sess-tab-hist"  onclick="showSessTab('hist',this)">History</button>
-        <button class="tab-btn"        id="sess-tab-stats" onclick="showSessTab('stats',this)">Stats</button>
-        <button class="tab-btn"        id="sess-tab-est"   onclick="showSessTab('est',this)">Estimator</button>
-      </div>
-
-      <!-- LOG TAB -->
-      <div id="sess-panel-log">
-        <div class="card">
-          <div style="font-size:15px;font-weight:600;margin-bottom:14px">Start a Crochet Session</div>
-          <div class="form-group">
-            <label>Project (optional)</label>
-            <select id="sess-project"><option value="">— no project —</option></select>
-          </div>
-          <div class="form-group">
-            <label>Stitch type</label>
-            <select id="sess-stitch">
-              <option value="sc">Single Crochet (sc)</option>
-              <option value="hdc">Half Double Crochet (hdc)</option>
-              <option value="dc" selected>Double Crochet (dc)</option>
-              <option value="tr">Treble Crochet (tr)</option>
-              <option value="sl-st">Slip Stitch (sl st)</option>
-              <option value="bobble">Bobble</option>
-              <option value="puff">Puff Stitch</option>
-              <option value="granny">Granny Square</option>
-              <option value="other">Other / Mixed</option>
-            </select>
-          </div>
-          <div class="form-group">
-            <label>Yarn weight</label>
-            <select id="sess-weight">
-              <option value="lace">Lace / Thread (0)</option>
-              <option value="fingering">Fingering (1)</option>
-              <option value="sport">Sport (2)</option>
-              <option value="dk">DK (3)</option>
-              <option value="worsted" selected>Worsted (4)</option>
-              <option value="bulky">Bulky (5)</option>
-              <option value="super-bulky">Super Bulky (6)</option>
-              <option value="jumbo">Jumbo (7)</option>
-            </select>
-          </div>
-          <div class="form-group">
-            <label>Hook size</label>
-            <select id="sess-hook">
-              <option>2.0mm</option><option>2.5mm</option><option>3.0mm</option><option>3.5mm</option>
-              <option>4.0mm</option><option>4.5mm</option><option value="5.0mm" selected>5.0mm</option>
-              <option>5.5mm</option><option>6.0mm</option><option>6.5mm</option><option>7.0mm</option>
-              <option>8.0mm</option><option>9.0mm</option><option>10.0mm</option><option>12.0mm</option>
-            </select>
-          </div>
-        </div>
-
-        <!-- Active session card -->
-        <div class="card" id="sess-active-card" style="text-align:center;display:none">
-          <div style="font-size:11px;font-weight:700;letter-spacing:.6px;text-transform:uppercase;color:var(--rose);margin-bottom:8px">🔴 Session Live</div>
-          <div class="timer-display" id="sess-timer">00:00:00</div>
-          <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:16px 0">
-            <div>
-              <div style="font-size:28px;font-weight:700;color:var(--charcoal)" id="sess-stitch-count">0</div>
-              <div style="font-size:11px;color:var(--muted)">stitches</div>
+        <!-- LOG TAB -->
+        <div id="sess-panel-log">
+          <div class="card">
+            <div style="font-size:15px;font-weight:600;margin-bottom:14px">Start a Crochet Session</div>
+            <div class="form-group"><label>Project (optional)</label>
+              <select id="sess-project"><option value="">— no project —</option></select>
             </div>
-            <div>
-              <div style="font-size:28px;font-weight:700;color:var(--rose)" id="sess-spm">—</div>
-              <div style="font-size:11px;color:var(--muted)">sts/min</div>
+            <div class="form-group"><label>Stitch type</label>
+              <select id="sess-stitch">
+                <option value="sc">Single Crochet (sc)</option><option value="hdc">Half Double Crochet (hdc)</option>
+                <option value="dc" selected>Double Crochet (dc)</option><option value="tr">Treble Crochet (tr)</option>
+                <option value="sl-st">Slip Stitch (sl st)</option><option value="bobble">Bobble</option>
+                <option value="puff">Puff Stitch</option><option value="granny">Granny Square</option>
+                <option value="other">Other / Mixed</option>
+              </select>
+            </div>
+            <div class="form-group"><label>Yarn weight</label>
+              <select id="sess-weight">
+                <option value="lace">Lace / Thread (0)</option><option value="fingering">Fingering (1)</option>
+                <option value="sport">Sport (2)</option><option value="dk">DK (3)</option>
+                <option value="worsted" selected>Worsted (4)</option><option value="bulky">Bulky (5)</option>
+                <option value="super-bulky">Super Bulky (6)</option><option value="jumbo">Jumbo (7)</option>
+              </select>
+            </div>
+            <div class="form-group"><label>Hook size</label>
+              <select id="sess-hook">
+                <option>2.0mm</option><option>2.5mm</option><option>3.0mm</option><option>3.5mm</option>
+                <option>4.0mm</option><option>4.5mm</option><option value="5.0mm" selected>5.0mm</option>
+                <option>5.5mm</option><option>6.0mm</option><option>6.5mm</option><option>7.0mm</option>
+                <option>8.0mm</option><option>9.0mm</option><option>10.0mm</option><option>12.0mm</option>
+              </select>
             </div>
           </div>
-          <div style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-bottom:12px">
-            <button class="counter-big-btn btn-minus" style="width:54px;height:54px;font-size:24px" onclick="sessAdjust(-1)">−</button>
-            <button class="counter-big-btn btn-plus"  style="width:54px;height:54px;font-size:24px" onclick="sessAdjust(1)">+</button>
+          <div class="card" id="sess-active-card" style="text-align:center;display:none">
+            <div style="font-size:11px;font-weight:700;letter-spacing:.6px;text-transform:uppercase;color:var(--rose);margin-bottom:8px">🔴 Session Live</div>
+            <div class="timer-display" id="sess-timer">00:00:00</div>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:16px 0">
+              <div><div style="font-size:28px;font-weight:700;color:var(--charcoal)" id="sess-stitch-count">0</div><div style="font-size:11px;color:var(--muted)">stitches</div></div>
+              <div><div style="font-size:28px;font-weight:700;color:var(--rose)" id="sess-spm">—</div><div style="font-size:11px;color:var(--muted)">sts/min</div></div>
+            </div>
+            <div style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-bottom:12px">
+              <button class="counter-big-btn btn-minus" style="width:54px;height:54px;font-size:24px" onclick="sessAdjust(-1)">−</button>
+              <button class="counter-big-btn btn-plus"  style="width:54px;height:54px;font-size:24px" onclick="sessAdjust(1)">+</button>
+            </div>
+            <div style="font-size:12px;color:var(--muted);margin-bottom:14px" id="sess-live-est"></div>
+            <button class="btn btn-fill btn-full" style="background:var(--rose-dark);border-color:var(--rose-dark)" onclick="endSession()">End Session &amp; Save</button>
           </div>
-          <div style="font-size:12px;color:var(--muted);margin-bottom:14px" id="sess-live-est"></div>
-          <button class="btn btn-fill btn-full" style="background:var(--rose-dark);border-color:var(--rose-dark)" onclick="endSession()">End Session &amp; Save</button>
+          <div id="sess-start-wrap"><button class="btn btn-fill btn-full" style="margin-top:4px" onclick="startSession()">▶ Start Session</button></div>
+          <div id="sess-save-result" style="margin-top:12px"></div>
         </div>
-
-        <div id="sess-start-wrap">
-          <button class="btn btn-fill btn-full" style="margin-top:4px" onclick="startSession()">▶ Start Session</button>
+        <!-- HISTORY TAB -->
+        <div id="sess-panel-hist" style="display:none"><div id="sess-history-list"></div></div>
+        <!-- STATS TAB -->
+        <div id="sess-panel-stats" style="display:none"><div id="sess-stats-content"></div></div>
+        <!-- ESTIMATOR TAB -->
+        <div id="sess-panel-est" style="display:none">
+          <div class="card">
+            <div style="font-size:15px;font-weight:600;margin-bottom:14px">⏱ Project Time Estimator</div>
+            <div class="form-group"><label>Stitch type</label>
+              <select id="est-stitch">
+                <option value="sc">Single Crochet (sc)</option><option value="hdc">Half Double Crochet (hdc)</option>
+                <option value="dc" selected>Double Crochet (dc)</option><option value="tr">Treble Crochet (tr)</option>
+                <option value="sl-st">Slip Stitch</option><option value="bobble">Bobble</option>
+                <option value="puff">Puff Stitch</option><option value="granny">Granny Square</option>
+                <option value="other">Other / Mixed</option>
+              </select>
+            </div>
+            <div class="form-group"><label>Yarn weight</label>
+              <select id="est-weight">
+                <option value="lace">Lace / Thread (0)</option><option value="fingering">Fingering (1)</option>
+                <option value="sport">Sport (2)</option><option value="dk">DK (3)</option>
+                <option value="worsted" selected>Worsted (4)</option><option value="bulky">Bulky (5)</option>
+                <option value="super-bulky">Super Bulky (6)</option><option value="jumbo">Jumbo (7)</option>
+              </select>
+            </div>
+            <div class="form-group"><label>Total stitches in project</label><input type="number" id="est-stitches" placeholder="e.g. 2400" min="1"></div>
+            <div class="form-group"><label>Break time per hour (minutes)</label><input type="number" id="est-breaks" value="10" min="0" max="59"></div>
+            <button class="btn btn-fill btn-full" onclick="calcEstimate()">Calculate</button>
+            <div id="est-result" style="margin-top:16px"></div>
+          </div>
+          <div class="section-label">Reference Speeds by Weight</div>
+          <div class="card" id="speed-ref-table"></div>
         </div>
-        <div id="sess-save-result" style="margin-top:12px"></div>
       </div>
-
-      <!-- HISTORY TAB -->
-      <div id="sess-panel-hist" style="display:none">
-        <div id="sess-history-list"></div>
+      <!-- Tools panel -->
+      <div id="more-panel-tools" class="more-panel" style="display:none">
+        <div class="tab-bar" id="tools-tabs">
+          <button class="tab-btn active" onclick="showToolTab('hooks',this)">Hook Sizes</button>
+          <button class="tab-btn" onclick="showToolTab('gauge',this)">Gauge Calc</button>
+          <button class="tab-btn" onclick="showToolTab('glossary',this)">Glossary</button>
+        </div>
+        <div id="tool-hooks" class="tool-panel">
+          <div class="card">
+            <h3 style="margin-bottom:12px">Hook Size Reference</h3>
+            <div style="overflow-x:auto"><table id="hook-table"></table></div>
+          </div>
+        </div>
+        <div id="tool-gauge" class="tool-panel" style="display:none">
+          <div class="card">
+            <h3 style="margin-bottom:14px">Gauge Calculator</h3>
+            <div class="form-group"><label>Stitches in your swatch</label><input type="number" id="g-swatch-sts" placeholder="e.g. 20" min="1"></div>
+            <div class="form-group"><label>Rows in your swatch</label><input type="number" id="g-swatch-rows" placeholder="e.g. 24" min="1"></div>
+            <div class="form-group"><label>Swatch width (cm)</label><input type="number" id="g-swatch-w" placeholder="e.g. 10" min="1"></div>
+            <div class="form-group"><label>Swatch height (cm)</label><input type="number" id="g-swatch-h" placeholder="e.g. 10" min="1"></div>
+            <div class="divider"></div>
+            <div class="form-group"><label>Target width (cm)</label><input type="number" id="g-target-w" placeholder="finished piece width"></div>
+            <div class="form-group"><label>Target height (cm)</label><input type="number" id="g-target-h" placeholder="finished piece height"></div>
+            <button class="btn btn-fill btn-full" onclick="calcGauge()">Calculate</button>
+            <div id="gauge-result" style="margin-top:16px"></div>
+          </div>
+        </div>
+        <div id="tool-glossary" class="tool-panel" style="display:none">
+          <input type="search" id="gloss-search" placeholder="Search abbreviation…" oninput="filterGlossary(this.value)" style="margin-bottom:12px">
+          <div id="glossary-list"></div>
+        </div>
       </div>
-
-      <!-- STATS TAB -->
-      <div id="sess-panel-stats" style="display:none">
-        <div id="sess-stats-content"></div>
-      </div>
-
-      <!-- ESTIMATOR TAB -->
-      <div id="sess-panel-est" style="display:none">
+      <!-- Sync panel -->
+      <div id="more-panel-sync" class="more-panel" style="display:none">
+        <div class="card" style="background:var(--rose-light);border-color:var(--rose)">
+          <div style="font-size:15px;font-weight:600;color:var(--rose-dark);margin-bottom:4px">🔄 CraftBase Sync</div>
+          <div class="subtext">Exchange data with your CraftBase Pro app. Use <strong>Export</strong> here, then <strong>Import</strong> in CraftBase (or vice versa).</div>
+        </div>
+        <div class="section-label">Export from Crochet Studio</div>
         <div class="card">
-          <div style="font-size:15px;font-weight:600;margin-bottom:14px">⏱ Project Time Estimator</div>
-          <div class="form-group">
-            <label>Stitch type</label>
-            <select id="est-stitch">
-              <option value="sc">Single Crochet (sc)</option>
-              <option value="hdc">Half Double Crochet (hdc)</option>
-              <option value="dc" selected>Double Crochet (dc)</option>
-              <option value="tr">Treble Crochet (tr)</option>
-              <option value="sl-st">Slip Stitch</option>
-              <option value="bobble">Bobble</option>
-              <option value="puff">Puff Stitch</option>
-              <option value="granny">Granny Square</option>
-              <option value="other">Other / Mixed</option>
-            </select>
+          <div style="font-size:14px;color:var(--charcoal-soft);margin-bottom:12px;line-height:1.6">Packages your yarn stash, projects, and patterns into a file that CraftBase can import.</div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:12px">
+            <div class="card-sm" style="text-align:center;margin-bottom:0">
+              <div style="font-size:20px;font-weight:700;color:var(--rose)" id="sync-yarn-count">0</div>
+              <div style="font-size:11px;color:var(--muted)">yarns</div>
+            </div>
+            <div class="card-sm" style="text-align:center;margin-bottom:0">
+              <div style="font-size:20px;font-weight:700;color:var(--sage)" id="sync-proj-count">0</div>
+              <div style="font-size:11px;color:var(--muted)">projects</div>
+            </div>
           </div>
-          <div class="form-group">
-            <label>Yarn weight</label>
-            <select id="est-weight">
-              <option value="lace">Lace / Thread (0)</option>
-              <option value="fingering">Fingering (1)</option>
-              <option value="sport">Sport (2)</option>
-              <option value="dk">DK (3)</option>
-              <option value="worsted" selected>Worsted (4)</option>
-              <option value="bulky">Bulky (5)</option>
-              <option value="super-bulky">Super Bulky (6)</option>
-              <option value="jumbo">Jumbo (7)</option>
-            </select>
-          </div>
-          <div class="form-group">
-            <label>Total stitches in project</label>
-            <input type="number" id="est-stitches" placeholder="e.g. 2400" min="1">
-          </div>
-          <div class="form-group">
-            <label>Break time per hour (minutes)</label>
-            <input type="number" id="est-breaks" value="10" min="0" max="59">
-          </div>
-          <button class="btn btn-fill btn-full" onclick="calcEstimate()">Calculate</button>
-          <div id="est-result" style="margin-top:16px"></div>
+          <button class="btn btn-fill btn-full" onclick="exportToCraftBase()">Export to CraftBase</button>
         </div>
-
-        <!-- Reference speeds card -->
-        <div class="section-label">Reference Speeds by Weight</div>
-        <div class="card" id="speed-ref-table"></div>
+        <div class="section-label">Import from CraftBase</div>
+        <div class="card">
+          <div style="font-size:14px;color:var(--charcoal-soft);margin-bottom:12px;line-height:1.6">Paste or load a CraftBase export file. Yarn materials and crochet products will be merged — existing records updated, new ones added.</div>
+          <div class="form-group">
+            <label>Paste CraftBase export JSON</label>
+            <textarea id="sync-import-text" placeholder='{"craftbase_sync":true, "materials":[…], …}' style="min-height:100px;font-size:12px;font-family:monospace"></textarea>
+          </div>
+          <div style="display:flex;gap:8px">
+            <button class="btn btn-fill btn-full btn-sage" onclick="importFromCraftBase()">Import &amp; Merge</button>
+            <label class="btn btn-full" style="cursor:pointer;justify-content:center">
+              📁 Load file
+              <input type="file" accept=".json" onchange="loadSyncFile(this)" style="display:none">
+            </label>
+          </div>
+          <div id="sync-result" style="margin-top:12px"></div>
+        </div>
+        <div class="section-label">How it works</div>
+        <div class="card" style="padding:14px">
+          <div class="step-item" style="padding:8px 0"><div class="step-num">1</div><div class="step-text"><strong>In Crochet Studio:</strong> tap Export → copies JSON to clipboard or downloads file</div></div>
+          <div class="step-item" style="padding:8px 0"><div class="step-num">2</div><div class="step-text"><strong>In CraftBase:</strong> go to Import/Export → Crochet Sync → paste or upload the file</div></div>
+          <div class="step-item" style="padding:8px 0"><div class="step-num">3</div><div class="step-text"><strong>CraftBase merges:</strong> yarn → materials, projects → products, patterns saved</div></div>
+          <div class="step-item" style="padding:8px 0;border-bottom:none"><div class="step-num">4</div><div class="step-text"><strong>Reverse sync:</strong> export from CraftBase, import here to pull in material updates</div></div>
+        </div>
       </div>
     </div>
+
+    <!-- ═══ SESSIONS (legacy redirect) ═══ -->
+    <div class="screen" id="screen-sessions" style="display:none!important"></div>
 
   </div><!-- /screens -->
 
@@ -588,25 +526,9 @@
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg>
       <span>Counter</span>
     </button>
-    <button class="nav-btn" id="nav-stitches" onclick="goTo('stitches')">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M12 3C7.58 3 4 6.58 4 11c0 2.42 1.08 4.58 2.78 6.08L4 21l4.54-1.2A8.93 8.93 0 0012 21c4.42 0 8-3.58 8-8s-3.58-8-8-8z"/><path d="M8 11h8M8 14h5"/></svg>
-      <span>Stitches</span>
-    </button>
-    <button class="nav-btn" id="nav-yarn" onclick="goTo('yarn')">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="8"/><path d="M4.93 7.07a8 8 0 0114.14 0M4.93 16.93a8 8 0 0114.14 0M3 12h18"/></svg>
-      <span>Stash</span>
-    </button>
-    <button class="nav-btn" id="nav-sessions" onclick="goTo('sessions')">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M12 2a10 10 0 100 20A10 10 0 0012 2z"/><path d="M12 6v6l4 2"/></svg>
-      <span>Sessions</span>
-    </button>
-    <button class="nav-btn" id="nav-tools" onclick="goTo('tools')">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M14.7 6.3a1 1 0 000 1.4l1.6 1.6a1 1 0 001.4 0l3.77-3.77a6 6 0 01-7.94 7.94l-6.91 6.91a2.12 2.12 0 01-3-3l6.91-6.91a6 6 0 017.94-7.94l-3.76 3.76z"/></svg>
-      <span>Tools</span>
-    </button>
-    <button class="nav-btn" id="nav-sync" onclick="goTo('sync')">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M4 4v6h6"/><path d="M20 20v-6h-6"/><path d="M20 10A8 8 0 006.93 6.93"/><path d="M4 14a8 8 0 0013.07 3.07"/></svg>
-      <span>Sync</span>
+    <button class="nav-btn" id="nav-more" onclick="goTo('more')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="5" cy="12" r="1.5" fill="currentColor" stroke="none"/><circle cx="12" cy="12" r="1.5" fill="currentColor" stroke="none"/><circle cx="19" cy="12" r="1.5" fill="currentColor" stroke="none"/></svg>
+      <span>More</span>
     </button>
   </nav>
 
@@ -676,6 +598,54 @@
       <div id="pat-preview" style="display:none;margin-bottom:14px"></div>
       <div class="form-group"><label>URL (optional)</label><input type="url" id="pat-url" placeholder="https://…"></div>
       <button class="btn btn-fill btn-full" onclick="savePattern()">Save Pattern</button>
+    </div>
+  </div>
+</div>
+
+<!-- Edit Pattern Modal -->
+<div class="modal-backdrop" id="modal-edit-pattern">
+  <div class="modal-sheet" style="max-height:92vh">
+    <div class="modal-handle"></div>
+    <div class="modal-title">Edit Pattern</div>
+    <div style="margin-top:16px">
+      <div class="form-group"><label>Pattern name</label><input type="text" id="edit-pat-name" placeholder="Pattern name"></div>
+      <div class="form-group"><label>Source / Designer</label><input type="text" id="edit-pat-source" placeholder="Ravelry, blog, book…"></div>
+      <div class="form-group"><label>Difficulty</label>
+        <select id="edit-pat-diff">
+          <option value="1">Beginner</option><option value="2">Easy</option>
+          <option value="3">Intermediate</option><option value="4">Advanced</option><option value="5">Expert</option>
+        </select>
+      </div>
+      <div class="form-group"><label>Tags (comma-separated)</label><input type="text" id="edit-pat-tags" placeholder="cosy, winter, gift"></div>
+      <div class="form-group"><label>URL (optional)</label><input type="url" id="edit-pat-url" placeholder="https://…"></div>
+
+      <!-- Pattern Notes (separate from instructions) -->
+      <div class="form-group">
+        <label>Notes &amp; modifications</label>
+        <textarea id="edit-pat-user-notes" placeholder="Your notes, yarn swaps, sizing tweaks…" style="min-height:70px"></textarea>
+      </div>
+
+      <div class="divider"></div>
+
+      <!-- Structured section/step editor -->
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">
+        <div style="font-size:13px;font-weight:600;color:var(--charcoal)">Sections &amp; Steps</div>
+        <button class="btn btn-sm btn-sage btn-fill" onclick="editPatAddSection()">+ Section</button>
+      </div>
+      <div id="edit-pat-sections" style="margin-bottom:12px"></div>
+
+      <!-- Raw text fallback toggle -->
+      <details style="margin-bottom:14px">
+        <summary style="font-size:12px;color:var(--muted);cursor:pointer;user-select:none">Re-paste raw instructions to re-parse</summary>
+        <div style="margin-top:10px">
+          <textarea id="edit-pat-raw" placeholder="Paste new instructions here to replace sections above" style="min-height:100px;font-size:13px" oninput="editPatRawPreview()"></textarea>
+          <div id="edit-pat-raw-preview" style="margin-top:6px;font-size:12px;color:var(--muted)"></div>
+          <button class="btn btn-sm btn-fill" style="margin-top:8px" onclick="editPatApplyRaw()">Apply &amp; Replace Sections</button>
+        </div>
+      </details>
+
+      <input type="hidden" id="edit-pat-id">
+      <button class="btn btn-fill btn-full" onclick="saveEditedPattern()">Save Changes</button>
     </div>
   </div>
 </div>
@@ -1090,7 +1060,15 @@ let editingProjectId = null;
 // ═══════════════════════════════════════════════════
 // NAVIGATION
 // ═══════════════════════════════════════════════════
+// Map old screen names to More tab names
+const MORE_TAB_MAP = { yarn:'stash', stitches:'stitches', sessions:'sessions', tools:'tools', sync:'sync' };
+
 function goTo(screen) {
+  // If it's a screen that lives inside More, redirect
+  if (MORE_TAB_MAP[screen]) {
+    _activateMoreTab(MORE_TAB_MAP[screen]);
+    screen = 'more';
+  }
   document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
   document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
   const s = document.getElementById('screen-'+screen);
@@ -1101,22 +1079,54 @@ function goTo(screen) {
   updateTopBar();
   if (screen === 'home') renderHome();
   if (screen === 'projects') renderProjects();
-  if (screen === 'yarn') renderYarnStash();
   if (screen === 'patterns') renderPatterns();
-  if (screen === 'stitches') renderStitchGrid();
-  if (screen === 'tools') renderHookTable();
-  if (screen === 'sync') renderSyncScreen();
-  if (screen === 'sessions') renderSessionsScreen();
+  if (screen === 'more') _onMoreVisible();
   document.getElementById('screens').scrollTop = 0;
+}
+
+let _currentMoreTab = 'stash';
+
+function _activateMoreTab(tab) {
+  _currentMoreTab = tab;
+  document.querySelectorAll('.more-panel').forEach(p => p.style.display = 'none');
+  const panel = document.getElementById('more-panel-'+tab);
+  if (panel) panel.style.display = 'block';
+  document.querySelectorAll('#more-tabs .tab-btn').forEach(b => b.classList.remove('active'));
+  const tb = document.getElementById('more-tab-'+tab);
+  if (tb) tb.classList.add('active');
+}
+
+function showMoreTab(tab, el) {
+  _activateMoreTab(tab);
+  updateTopBar();
+  _onMoreTabRender(tab);
+}
+
+function _onMoreVisible() {
+  _onMoreTabRender(_currentMoreTab);
+}
+
+function _onMoreTabRender(tab) {
+  if (tab === 'stash')    renderYarnStash();
+  if (tab === 'stitches') renderStitchGrid();
+  if (tab === 'tools')    renderHookTable();
+  if (tab === 'sync')     renderSyncScreen();
+  if (tab === 'sessions') renderSessionsScreen();
 }
 
 function updateTopBar() {
   const btn = document.getElementById('topAction');
   const actions = {
     projects: { text:'+ Project', fn:'openModal("modal-add-project")' },
-    yarn: { text:'+ Yarn', fn:'openModal("modal-add-yarn")' },
     patterns: { text:'+ Pattern', fn:'openModal("modal-add-pattern")' },
   };
+  // Add yarn button when in More > Stash tab
+  if (currentScreen === 'more' && _currentMoreTab === 'stash') {
+    btn.textContent = '+ Yarn';
+    btn.setAttribute('onclick', 'openModal("modal-add-yarn")');
+    btn.style.display = 'inline-flex';
+    return;
+  }
   if (actions[currentScreen]) {
     btn.textContent = actions[currentScreen].text;
     btn.setAttribute('onclick', actions[currentScreen].fn);
@@ -1495,9 +1505,10 @@ function deleteYarn(id) {
 // ═══════════════════════════════════════════════════
 // PATTERNS
 // ═══════════════════════════════════════════════════
+
 // ─────────────────────────────────────────────────
-// PATTERN PARSER
-// Detects section headers, splits into steps
+// PATTERN PARSER — tightened to avoid misreading
+// crochet instructions like "R1: sc in each st"
 // ─────────────────────────────────────────────────
 function parsePatternInstructions(raw) {
   if (!raw || !raw.trim()) return [];
@@ -1505,40 +1516,49 @@ function parsePatternInstructions(raw) {
   const sections = [];
   let current = null;
 
-  // Header detection regexes
+  // Known crochet section header words (safe to treat as headers even with colon)
+  const SECTION_WORDS = /^(head|body|legs?|arms?|ears?|tail|eyes?|nose|mouth|assembly|finishing|border|edging|base|top|bottom|brim|crown|band|cuff|sleeve|collar|neckline|pocket|hood|lining|soles?|materials?|supplies|gauge|notes?|abbreviations?|special\s+stitches?|instructions?|pattern\s+notes?|yarn|hook|yardage|size|measurements?)s?\s*:?$/i;
+
+  // Patterns that should NEVER be treated as headers
+  const isNeverHeader = t => {
+    // Numbered row/round/repeat lines: "R1:", "Row 3:", "Rnd 5:", "Round 1:", "1."
+    if (/^(R\d+|Row\s*\d+|Rnd\s*\d+|Round\s*\d+)\s*[:\-–]/.test(t)) return true;
+    // Stitch abbreviation lines starting with sc/dc/hdc/tr/ch/sl/yo etc
+    if (/^(sc|dc|hdc|tr|dtr|sl\s*st|ch|yo|inc|dec|2sc|3sc|2dc|magic|mr)\b/i.test(t)) return true;
+    // Lines that start with a number
+    if (/^\d+/.test(t)) return true;
+    // Lines with crochet-specific content (parentheses with stitch counts)
+    if (/\(\d+\s*(sts?|dc|sc|hdc|tr)\)/.test(t)) return true;
+    // Lines containing crochet instruction words mid-sentence (not section names)
+    if (/\b(sc|dc|hdc|tr|ch|sl\s*st|inc|dec|yo|st|sts|sp|blo|flo|pm|sm)\b.{5,}/i.test(t)) return true;
+    // Lines with "in" or "into" suggesting working into stitches
+    if (/\bin(to)?\s+(each|next|last|first|the|same|st|blo|flo)/i.test(t)) return true;
+    return false;
+  };
+
   const isHeader = line => {
     const t = line.trim();
     if (!t) return false;
-    // "Body:", "HEAD:", "Round 1:" etc — word(s) followed by colon at end of trimmed line
-    if (/^[A-Za-z][A-Za-z0-9 \-_]{0,40}:$/.test(t)) return true;
-    // ALL CAPS word(s), 2-30 chars, no digits-only
-    if (/^[A-Z][A-Z0-9 \-_]{1,29}$/.test(t) && !/^\d+$/.test(t)) return true;
-    // Markdown-style ## Header
-    if (/^#{1,3}\s+/.test(t)) return true;
-    // --- Section --- or === Section ===
-    if (/^[-=*]{2,}\s*[A-Za-z].*[-=*]{0,}$/.test(t)) return true;
-    // "SECTION 1." or "Part 1:" or "Step 1:"
-    if (/^(section|part|step|round|rnd|row|piece|panel)\s*\d*[:\-–.]?\s*$/i.test(t)) return true;
+    if (isNeverHeader(t)) return false;
+    // Markdown-style ## Header — very reliable
+    if (/^#{1,3}\s+\S/.test(t)) return true;
+    // ALL CAPS only (no lowercase, min 4 chars, not just abbr+number)
+    // e.g. "HEAD", "BODY", "FINISHING" — but NOT "R1" or "SC"
+    if (/^[A-Z][A-Z\s\-_]{3,29}$/.test(t) && !/^[A-Z]{1,3}\d/.test(t)) return true;
+    // Word(s) ending with colon ONLY if it's a known section word
+    // e.g. "Body:", "Head:", "Finishing:" — but NOT "R1:", "sc in next st:"
+    if (/^[A-Za-z][\w\s]{2,40}:$/.test(t) && SECTION_WORDS.test(t.replace(/:$/, '').trim())) return true;
+    // --- Section --- style
+    if (/^[-=]{3,}\s*[A-Za-z].{0,30}[-=]{0,3}$/.test(t)) return true;
     return false;
   };
 
   const cleanHeader = line => line.trim()
-    .replace(/^#+\s*/, '')
+    .replace(/^#{1,3}\s*/, '')
     .replace(/^[-=*]+\s*/, '')
     .replace(/\s*[-=*]+$/, '')
     .replace(/:$/, '')
     .trim();
-
-  const isStep = line => {
-    const t = line.trim();
-    if (!t) return false;
-    // Numbered step: "1." "1)" "R1:" "Row 1:"
-    if (/^(\d+[\.\):]|R\d+:|Row\s*\d+:|Rnd\s*\d+:|Round\s*\d+:)/i.test(t)) return true;
-    // Bullet
-    if (/^[-•*]\s+/.test(t)) return true;
-    // Any non-empty line that's not a header
-    return true;
-  };
 
   const cleanStep = line => line.trim()
     .replace(/^[-•*]\s+/, '')
@@ -1547,61 +1567,19 @@ function parsePatternInstructions(raw) {
   for (const line of lines) {
     const t = line.trim();
     if (!t) continue;
-
     if (isHeader(t)) {
       current = { title: cleanHeader(t), steps: [] };
       sections.push(current);
     } else {
       if (!current) {
-        // No header yet — create a default section
         current = { title: '', steps: [] };
         sections.push(current);
       }
-      if (isStep(t)) {
-        current.steps.push({ text: cleanStep(t), done: false });
-      }
-    }
-  }
-
-  // If everything ended up in one untitled section with no clear sections,
-  // try comma-split for single-line pastes like "body: 1sc, 2sc, ears: 3sc"
-  if (sections.length === 1 && !sections[0].title && sections[0].steps.length === 1) {
-    const singleLine = raw.trim();
-    if (singleLine.includes(',')) {
-      const commaSections = parseCommaSections(singleLine);
-      if (commaSections.length > 0) return commaSections;
+      current.steps.push({ text: cleanStep(t), done: false });
     }
   }
 
   return sections.filter(s => s.steps.length > 0);
-}
-
-function parseCommaSections(text) {
-  // Handles: "body: 1sc, 2dc, ears: 3sc, 4dc"
-  const sections = [];
-  // Split on section-like patterns preceded by commas
-  const sectionPattern = /(?:^|,\s*)([A-Za-z][A-Za-z0-9 ]{0,25})\s*:\s*/g;
-  const matches = [];
-  let m;
-  while ((m = sectionPattern.exec(text)) !== null) {
-    matches.push({ title: m[1].trim(), index: m.index + m[0].length, rawStart: m.index });
-  }
-  if (matches.length < 2) {
-    // No sections found — just split by commas as steps
-    const steps = text.split(',').map(s => s.trim()).filter(Boolean);
-    if (steps.length > 1) {
-      return [{ title: '', steps: steps.map(s => ({ text: s, done: false })) }];
-    }
-    return [];
-  }
-  matches.forEach((match, i) => {
-    const end = i + 1 < matches.length ? matches[i+1].rawStart : text.length;
-    const content = text.slice(match.index, end);
-    const steps = content.split(',').map(s => s.trim()).filter(Boolean)
-      .map(s => ({ text: s, done: false }));
-    if (steps.length) sections.push({ title: match.title, steps });
-  });
-  return sections;
 }
 
 function previewPatternParse() {
@@ -1611,8 +1589,13 @@ function previewPatternParse() {
   const sections = parsePatternInstructions(raw);
   if (!sections.length) { preview.style.display = 'none'; return; }
   preview.style.display = 'block';
+  const headerCount = sections.filter(s => s.title).length;
+  const stepCount   = sections.reduce((a,s) => a + s.steps.length, 0);
   preview.innerHTML = `
-    <div style="font-size:11px;font-weight:700;letter-spacing:0.5px;text-transform:uppercase;color:var(--muted);margin-bottom:8px">Preview — how it'll look</div>
+    <div style="font-size:11px;font-weight:700;letter-spacing:0.5px;text-transform:uppercase;color:var(--muted);margin-bottom:8px">
+      Preview — ${headerCount} section${headerCount!==1?'s':''}, ${stepCount} step${stepCount!==1?'s':''} detected
+      <span style="font-weight:400;margin-left:6px;color:var(--rose-dark)">Edit after saving if headers look wrong</span>
+    </div>
     <div style="background:var(--cream-dark);border-radius:var(--radius-sm);padding:12px;max-height:200px;overflow-y:auto">
       ${renderSectionsHTML(sections, 'preview', true)}
     </div>`;
@@ -1624,7 +1607,7 @@ function renderSectionsHTML(sections, patId, preview) {
       ${sec.title ? `<div style="font-size:${preview?'11px':'13px'};font-weight:700;letter-spacing:0.4px;text-transform:uppercase;color:var(--rose-dark);margin-bottom:${preview?'5px':'8px'};padding-bottom:4px;border-bottom:1.5px solid var(--rose-light)">${sec.title}</div>` : ''}
       ${sec.steps.map((step, ti) => `
         <label style="display:flex;align-items:flex-start;gap:10px;padding:${preview?'3px':'6px'} 0;cursor:${preview?'default':'pointer'};border-bottom:0.5px solid var(--border)">
-          <input type="checkbox" ${step.done?'checked':''} ${preview?'disabled':''} 
+          <input type="checkbox" ${step.done?'checked':''} ${preview?'disabled':''}
             onchange="togglePatternStep('${patId}',${si},${ti},this.checked)"
             style="margin-top:3px;width:16px;height:16px;accent-color:var(--rose);flex-shrink:0;cursor:pointer">
           <span style="font-size:${preview?'12px':'14px'};color:${step.done?'var(--muted)':'var(--charcoal-soft)'};line-height:1.5;${step.done?'text-decoration:line-through;':''}">${step.text}</span>
@@ -1657,10 +1640,14 @@ function renderPatterns() {
     <div class="card" id="pat-card-${p.id}">
       <div class="row-between" style="margin-bottom:6px">
         <div style="font-size:15px;font-weight:600;flex:1;padding-right:8px">${p.name}</div>
-        <span class="badge badge-rose" style="font-size:10px;flex-shrink:0">${diffLabels[parseInt(p.diff)]||''}</span>
+        <div style="display:flex;gap:6px;align-items:center;flex-shrink:0">
+          <span class="badge badge-rose" style="font-size:10px">${diffLabels[parseInt(p.diff)]||''}</span>
+          <button class="btn btn-sm" style="padding:4px 10px;font-size:12px" onclick="openEditPattern('${p.id}')">Edit</button>
+        </div>
       </div>
       ${p.source ? `<div style="font-size:12px;color:var(--muted);margin-bottom:4px">📍 ${p.source}</div>` : ''}
       ${p.tags ? `<div class="tags-row" style="margin-bottom:8px">${p.tags.split(',').map(t=>`<span class="tag">${t.trim()}</span>`).join('')}</div>` : ''}
+      ${p.userNotes ? `<div style="font-size:12px;color:var(--sage-dark);background:var(--sage-light);border-radius:6px;padding:8px 10px;margin-bottom:8px;line-height:1.5">📝 ${p.userNotes}</div>` : ''}
       ${totalSteps ? `
         <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px">
           <div class="progress-bar" style="flex:1"><div class="progress-fill" style="width:${pct}%;background:${pct===100?'var(--sage)':'var(--rose)'}"></div></div>
@@ -1697,12 +1684,13 @@ function savePattern() {
   const patterns = LS.get('patterns');
   patterns.push({
     id: 'pat_'+Date.now(), name,
-    source: document.getElementById('pat-source').value.trim(),
-    diff:   document.getElementById('pat-diff').value,
-    tags:   document.getElementById('pat-tags').value.trim(),
-    notes:  rawNotes,
+    source:    document.getElementById('pat-source').value.trim(),
+    diff:      document.getElementById('pat-diff').value,
+    tags:      document.getElementById('pat-tags').value.trim(),
+    notes:     rawNotes,
+    userNotes: '',
     sections,
-    url:    document.getElementById('pat-url').value.trim(),
+    url:       document.getElementById('pat-url').value.trim(),
   });
   LS.set('patterns', patterns);
   ['pat-name','pat-source','pat-tags','pat-notes','pat-url'].forEach(id => document.getElementById(id).value='');
@@ -1714,6 +1702,158 @@ function savePattern() {
 function deletePattern(id) {
   if (!confirm('Delete this pattern?')) return;
   LS.set('patterns', LS.get('patterns').filter(p => p.id !== id));
+  renderPatterns();
+}
+
+// ─────────────────────────────────────────────────
+// PATTERN EDITOR
+// ─────────────────────────────────────────────────
+function openEditPattern(id) {
+  const patterns = LS.get('patterns');
+  const p = patterns.find(x => x.id === id);
+  if (!p) return;
+  document.getElementById('edit-pat-id').value    = id;
+  document.getElementById('edit-pat-name').value  = p.name || '';
+  document.getElementById('edit-pat-source').value = p.source || '';
+  document.getElementById('edit-pat-diff').value  = p.diff || '3';
+  document.getElementById('edit-pat-tags').value  = p.tags || '';
+  document.getElementById('edit-pat-url').value   = p.url || '';
+  document.getElementById('edit-pat-user-notes').value = p.userNotes || '';
+  document.getElementById('edit-pat-raw').value   = '';
+  document.getElementById('edit-pat-raw-preview').textContent = '';
+  // Use saved sections, or re-parse from raw notes if no sections
+  const secs = (p.sections && p.sections.length) ? p.sections
+             : (p.notes ? parsePatternInstructions(p.notes) : []);
+  renderEditSections(secs);
+  openModal('modal-edit-pattern');
+}
+
+// _editSections is the live working copy while the modal is open
+let _editSections = [];
+
+function renderEditSections(secs) {
+  _editSections = JSON.parse(JSON.stringify(secs)); // deep clone
+  _renderEditSectionsDOM();
+}
+
+function _renderEditSectionsDOM() {
+  const el = document.getElementById('edit-pat-sections');
+  if (!_editSections.length) {
+    el.innerHTML = `<div style="font-size:13px;color:var(--muted);padding:12px 0">No sections yet — add one above, or paste raw instructions below.</div>`;
+    return;
+  }
+  el.innerHTML = _editSections.map((sec, si) => `
+    <div style="background:var(--cream-dark);border-radius:10px;padding:12px;margin-bottom:10px">
+      <!-- Section header row -->
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px">
+        <input type="text" value="${_escHtml(sec.title)}" placeholder="Section name (optional)"
+          oninput="_editSecTitle(${si},this.value)"
+          style="flex:1;font-size:13px;font-weight:600;padding:6px 10px;border-radius:6px;border:1px solid var(--border-med);background:var(--card-bg);color:var(--charcoal);font-family:var(--font)">
+        <button onclick="_editSecMoveUp(${si})" ${si===0?'disabled':''} style="border:none;background:none;font-size:16px;cursor:pointer;color:var(--muted);padding:2px 5px" title="Move up">↑</button>
+        <button onclick="_editSecMoveDown(${si})" ${si===_editSections.length-1?'disabled':''} style="border:none;background:none;font-size:16px;cursor:pointer;color:var(--muted);padding:2px 5px" title="Move down">↓</button>
+        <button onclick="_editSecDelete(${si})" style="border:none;background:none;font-size:18px;cursor:pointer;color:var(--rose);padding:2px 4px" title="Delete section">×</button>
+      </div>
+      <!-- Steps list -->
+      <div id="edit-sec-steps-${si}">
+        ${sec.steps.map((step, ti) => _editStepHTML(si, ti, step.text, step.done)).join('')}
+      </div>
+      <button class="btn btn-sm" style="margin-top:8px;font-size:12px" onclick="_editSecAddStep(${si})">+ Step</button>
+    </div>`).join('');
+}
+
+function _escHtml(s) {
+  return (s||'').replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+
+function _editStepHTML(si, ti, text, done) {
+  return `<div style="display:flex;align-items:flex-start;gap:8px;padding:4px 0;border-bottom:0.5px solid var(--border)" id="edit-step-${si}-${ti}">
+    <input type="checkbox" ${done?'checked':''} onchange="_editStepDone(${si},${ti},this.checked)"
+      style="margin-top:5px;width:16px;height:16px;accent-color:var(--rose);flex-shrink:0;cursor:pointer">
+    <textarea rows="2" oninput="_editStepText(${si},${ti},this.value)"
+      style="flex:1;font-size:13px;padding:4px 8px;border-radius:6px;border:1px solid var(--border-med);background:var(--card-bg);color:var(--charcoal);font-family:var(--font);resize:vertical;min-height:36px;line-height:1.4">${_escHtml(text)}</textarea>
+    <div style="display:flex;flex-direction:column;gap:2px;flex-shrink:0">
+      <button onclick="_editStepMoveUp(${si},${ti})" ${ti===0?'disabled':''} style="border:none;background:none;font-size:13px;cursor:pointer;color:var(--muted);line-height:1;padding:1px 3px" title="Move up">↑</button>
+      <button onclick="_editStepMoveDown(${si},${ti})" style="border:none;background:none;font-size:13px;cursor:pointer;color:var(--muted);line-height:1;padding:1px 3px" title="Move down">↓</button>
+      <button onclick="_editStepDelete(${si},${ti})" style="border:none;background:none;font-size:15px;cursor:pointer;color:var(--rose);line-height:1;padding:1px 3px" title="Delete">×</button>
+    </div>
+  </div>`;
+}
+
+// Section mutations
+function _editSecTitle(si, val)  { _editSections[si].title = val; }
+function _editSecDelete(si)      { _editSections.splice(si,1); _renderEditSectionsDOM(); }
+function _editSecMoveUp(si)      { if(si>0){ const t=_editSections.splice(si,1)[0]; _editSections.splice(si-1,0,t); _renderEditSectionsDOM(); } }
+function _editSecMoveDown(si)    { if(si<_editSections.length-1){ const t=_editSections.splice(si,1)[0]; _editSections.splice(si+1,0,t); _renderEditSectionsDOM(); } }
+function _editSecAddStep(si)     { _editSections[si].steps.push({text:'',done:false}); _renderEditSectionsDOM(); }
+function editPatAddSection()     { _editSections.push({title:'',steps:[{text:'',done:false}]}); _renderEditSectionsDOM(); }
+
+// Step mutations — read current textarea value before mutating
+function _editStepText(si,ti,val){ _editSections[si].steps[ti].text = val; }
+function _editStepDone(si,ti,v)  { _editSections[si].steps[ti].done = v; }
+function _editStepDelete(si,ti)  {
+  _editSections[si].steps.splice(ti,1);
+  // Re-render only the steps div of this section to preserve other textareas
+  _renderEditSectionsDOM();
+}
+function _editStepMoveUp(si,ti)  {
+  if(ti>0){ const t=_editSections[si].steps.splice(ti,1)[0]; _editSections[si].steps.splice(ti-1,0,t); _renderEditSectionsDOM(); }
+}
+function _editStepMoveDown(si,ti){
+  if(ti<_editSections[si].steps.length-1){ const t=_editSections[si].steps.splice(ti,1)[0]; _editSections[si].steps.splice(ti+1,0,t); _renderEditSectionsDOM(); }
+}
+
+// Sync textarea values into _editSections before any re-render
+function _syncEditSectionsFromDOM() {
+  _editSections.forEach((sec, si) => {
+    sec.steps.forEach((step, ti) => {
+      const ta = document.querySelector(`#edit-step-${si}-${ti} textarea`);
+      if (ta) step.text = ta.value;
+      const cb = document.querySelector(`#edit-step-${si}-${ti} input[type=checkbox]`);
+      if (cb) step.done = cb.checked;
+    });
+    const titleInput = document.querySelector(`#edit-pat-sections > div:nth-child(${si+1}) input[type=text]`);
+    if (titleInput) sec.title = titleInput.value;
+  });
+}
+
+// Raw re-parse helpers
+function editPatRawPreview() {
+  const raw = document.getElementById('edit-pat-raw').value;
+  const el  = document.getElementById('edit-pat-raw-preview');
+  if (!raw.trim()) { el.textContent = ''; return; }
+  const secs = parsePatternInstructions(raw);
+  const hc   = secs.filter(s=>s.title).length;
+  const sc   = secs.reduce((a,s)=>a+s.steps.length,0);
+  el.textContent = `Will create ${hc} section${hc!==1?'s':''} with ${sc} step${sc!==1?'s':''}.`;
+}
+function editPatApplyRaw() {
+  const raw = document.getElementById('edit-pat-raw').value.trim();
+  if (!raw) return;
+  const secs = parsePatternInstructions(raw);
+  if (!secs.length) { alert('Nothing could be parsed — check the text and try again.'); return; }
+  renderEditSections(secs);
+  document.getElementById('edit-pat-raw').value = '';
+  document.getElementById('edit-pat-raw-preview').textContent = '';
+}
+
+function saveEditedPattern() {
+  const id = document.getElementById('edit-pat-id').value;
+  _syncEditSectionsFromDOM();
+  const patterns = LS.get('patterns');
+  const idx = patterns.findIndex(p => p.id === id);
+  if (idx < 0) return;
+  patterns[idx] = {
+    ...patterns[idx],
+    name:      document.getElementById('edit-pat-name').value.trim()   || patterns[idx].name,
+    source:    document.getElementById('edit-pat-source').value.trim(),
+    diff:      document.getElementById('edit-pat-diff').value,
+    tags:      document.getElementById('edit-pat-tags').value.trim(),
+    url:       document.getElementById('edit-pat-url').value.trim(),
+    userNotes: document.getElementById('edit-pat-user-notes').value.trim(),
+    sections:  _editSections.filter(s => s.steps.length > 0),
+  };
+  LS.set('patterns', patterns);
+  closeModal('modal-edit-pattern');
   renderPatterns();
 }
 
